@@ -5,6 +5,6 @@
 
     define('DATABASE', 'ProyectoBiblioteca');
 
-    define('SERVIDOR', 'DARPHA-NET\SQLEXPRESS');
+    define('SERVIDOR', 'DARPHA-NET\MSSQLSERVER2');
     
 ?>
