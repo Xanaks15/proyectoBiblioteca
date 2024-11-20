@@ -2,6 +2,7 @@
     include_once __DIR__.'/setting.php';
     class DataBase{
         protected $conector = null;
+        protected $data;
 
         public function __construc(){
             $this->conector = new PDO("sqlsrv:server=".SERVIDOR.";database=".DATABASE,USUARIO,PASSWORD);
