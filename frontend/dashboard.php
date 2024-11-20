@@ -89,9 +89,11 @@
   </div>
 
   <div class="search-section">
-    <input type="text" class="form-control d-inline-block" placeholder="Buscar por...">
-    <button class="btn btn-outline-dark">Buscar</button>
-  </div>
+    <input type="text" class="form-control d-inline-block" id="search-input" placeholder="Buscar por libro o autor...">
+    <button class="btn btn-outline-dark" id="search-button">Buscar</button>
+</div>
+<div id="search-results"></div> <!-- Aquí se mostrarán los resultados -->
+
 
   <script src="https://code.jquery.com/jquery-3.3.1.min.js"
     integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
