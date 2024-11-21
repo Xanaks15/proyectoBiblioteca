@@ -11,14 +11,14 @@ $bibliotecarios = [
 // Obtener los datos de inicio de sesión
 $data = json_decode(file_get_contents('php://input'), true);
 
-if (isset($data['correo']) && isset($data['contraseña'])) {
-    $correo = $data['correo'];
-    $contraseña = $data['contraseña'];
+if (isset($data['email']) && isset($data['password'])) {
+    $email = $data['email'];
+    $password = $data['password'];
 
     // Validar las credenciales con los datos de los bibliotecarios
     $encontrado = false;
     foreach ($bibliotecarios as $bibliotecario) {
-        if ($bibliotecario['correo'] === $correo && $bibliotecario['contraseña'] === $contraseña) {
+        if ($bibliotecario['correo'] === $email && $bibliotecario['contraseña'] === $password) {
             $encontrado = true;
             break;
         }

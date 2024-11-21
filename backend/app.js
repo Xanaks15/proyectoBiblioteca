@@ -47,22 +47,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Obtener los valores del formulario
     const rol = document.getElementById('role').value;
-    const correo = document.getElementById('login-email').value;
-    const contraseña = document.getElementById('login-password').value;
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
 
     // Validar que los campos no estén vacíos
-    if (!correo || !contraseña) {
+    if (!email || !password) {
       alert('Por favor, complete todos los campos.');
       return;
     }
 
     // Crear un objeto con los datos para enviar al servidor
     const data = {
-      correo,
-      contraseña,
+      email,
+      password,
       rol
     };
-
     // Determinar la URL de destino dependiendo del rol
     let url;
     if (rol === 'bibliotecario') {
@@ -72,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      // Enviar la solicitud al servidor
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -80,59 +78,147 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         body: JSON.stringify(data)
       });
+    
+      if (!response.ok) {
+        alert('Error en la conexión: ' + response.statusText);
+        return;
+    }
 
-      const result = await response.json();
-      
-      if (response.ok) {
-        // Si el inicio de sesión es exitoso
+    // Convertir la respuesta a JSON
+    const result = await response.json();
+    
+      if (result.success) {
+        // Si el inicio de sesión es exitoso, ocultar el login y mostrar el perfil
         alert('Inicio de sesión exitoso');
-        // Redirigir al usuario a la página correspondiente
-        window.location.href = result.redirectUrl; // URL de redirección proporcionada por el servidor
+        
+        // Cambiar el texto del dropdown a 'Perfil'
+        $('#navbarDropdown').html('Perfil');
+        
+        // Actualizar el dropdown para que solo muestre las opciones de perfil
+        $('#navbarDropdown').attr('data-toggle', 'dropdown');
+      
+        // Ocultar los formularios de inicio de sesión y registro
+        $('#form-login').hide();
+        $('#form-register').hide();
+      
+        // Ocultar el contenedor del dropdown original
+        $('.dropdown-menu.show').hide();
+      
+        // Reducir el tamaño del dropdown-menu mediante la propiedad CSS 'max-height'
+        $('#navbarDropdown').parent().find('.dropdown-menu').css({
+          'max-height': '100px', // Reducir la altura máxima del dropdown
+          'max-width': '100px',
+          'overflow-y': 'auto',   // Añadir scroll si es necesario
+          'padding': '5px',       // Reducir el padding para que el contenido ocupe menos espacio
+          'font-size': '14px'     // Reducir el tamaño de la fuente para hacerlo más compacto
+        });
+      
+        // Mostrar las opciones de perfil con el nuevo tamaño reducido
+        $('#navbarDropdown').after(`
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#" id="view-loans">Ver Préstamos</a>
+            <a class="dropdown-item" href="#" id="logout">Cerrar Sesión</a>
+          </div>
+        `);
+      
+        // Añadir eventos a los botones
+        $('#view-loans').click(function() {
+          alert('Ver préstamos'); // Aquí puedes redirigir a la página de préstamos o mostrar información relevante
+        });
+      
+        $('#logout').click(function() {
+          // Implementar logout
+          alert('Cerrar sesión');
+          // Redirigir a la página de logout si es necesario o eliminar el token de sesión
+        });
+        const product = JSON.parse(response);
+        console.log(product);
       } else {
         // Si hay un error en el inicio de sesión
         alert(result.error || 'Hubo un problema al iniciar sesión');
       }
+      
     } catch (error) {
       console.error('Error:', error);
       alert('Hubo un problema al conectar con el servidor');
     }
+    
   });
 });
 
-//busqueda
 
-document.getElementById('search-button').addEventListener('click', function() {
-  const searchQuery = document.getElementById('search-input').value.trim();
-  
-  if (searchQuery === '') {
-      alert('Por favor ingresa un término de búsqueda.');
-      return;
-  }
-  
-  // URL del backend con el término de búsqueda
-  const url = `http://localhost/proyectoBiblioteca/backend/search.php?query=${encodeURIComponent(searchQuery)}`;
-  
-  // Realizar la búsqueda en el backend
-  fetch(url)
-      .then(response => response.json())
-      .then(data => {
-          const resultsContainer = document.getElementById('search-results');
-          resultsContainer.innerHTML = '';  // Limpiar resultados previos
-          
-          if (data.status === 'success' && data.results.length > 0) {
-              let resultsHtml = '<ul>';
-              data.results.forEach(item => {
-                  // Mostrar cada resultado (puedes personalizar según lo que devuelvas desde la base de datos)
-                  resultsHtml += `<li>${item.title || item.name} (${item.author || 'Desconocido'})</li>`;
+$('#search-input').keyup(function () {
+  const search = $(this).val(); // Captura el valor del input
+  if (search) {
+      $.ajax({
+          url: 'http://localhost/proyectoBiblioteca/backend/search.php',
+          type: 'GET',
+          data: { query: search },
+          success: function (response) {
+              const data = JSON.parse(response);
+              let resultsHTML = '';
+
+              if (data.length > 0) {
+                  data.forEach(item => {
+                      resultsHTML += `
+                          <div class="list-group-item">
+                              ${item.libro} - ${item.autor}
+                          </div>
+                      `;
+                  });
+
+                  $('#search-results').html(resultsHTML).fadeIn(); // Muestra el desplegable
+              } else {
+                  $('#search-results').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
+              }
+
+              // Habilitar clic en los resultados
+              $('.list-group-item').click(function () {
+                  const selectedText = $(this).text();
+                  alert(`Seleccionaste: ${selectedText}`);
               });
-              resultsHtml += '</ul>';
-              resultsContainer.innerHTML = resultsHtml;
-          } else {
-              resultsContainer.innerHTML = '<p>No se encontraron resultados.</p>';
+          },
+          error: function () {
+              $('#search-results').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
           }
-      })
-      .catch(error => {
-          console.error('Error:', error);
-          alert('Hubo un problema al realizar la búsqueda.');
       });
+  } else {
+      $('#search-results').fadeOut(); // Esconde el desplegable si no hay texto
+  }
 });
+
+// Ocultar el desplegable si haces clic fuera
+$(document).click(function (event) {
+  const target = $(event.target);
+  if (!target.closest('#search-input').length && !target.closest('#search-results').length) {
+      $('#search-results').fadeOut();
+  }
+});
+
+// Carga inicial
+$(document).ready(function () {
+  cargarTopLibros();
+
+});
+
+// Función para cargar los libros más prestados
+function cargarTopLibros() {
+  $.ajax({
+    url: 'http://localhost/proyectoBiblioteca/backend/top-books.php', // Archivo PHP que consulta la vista [vw_LibrosMasPrestados]
+    method: 'GET',
+    dataType: 'json',
+    success: function (data) {
+      let topBooks = $('#top-books');
+      topBooks.empty(); // Limpiar la lista antes de llenarla
+      data.forEach(function (book) {
+        topBooks.append(`<li class="list-group-item">${book.libro}</li>`);
+      });
+    },
+    error: function () {
+      console.error('Error al cargar los libros más prestados');
+    },
+  });
+}
+
+
+

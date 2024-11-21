@@ -37,6 +37,13 @@ body {
   margin-right: 5px;
 }
 
+/* Agregar esta clase en tu archivo de estilos o dentro de una etiqueta <style> */
+.small-dropdown {
+  padding: 5px;
+  font-size: 14px;
+  min-height: 40px;
+}
+
 /* Estilo para el dropdown de iniciar sesión */
 .dropdown-menu {
   display: none;
@@ -121,3 +128,48 @@ body {
 .container {
   width: 600px;
 }
+
+/*resultados de busqueda
+*/
+#search-results {
+  position: absolute; /* Para que se posicione debajo del input */
+  top: 110%; /* Justo debajo del input */
+  left: 565px; /* Alineado con el input */
+  width: 405px; /* Mismo ancho del input */
+  z-index: 1000; /* Sobre otros elementos */
+  background-color: white; /* Fondo blanco para destacar */
+  border: 1px solid #ccc; /* Bordes del desplegable */
+  border-radius: 0 0 5px 5px; /* Bordes redondeados en la parte inferior */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para efecto flotante */
+  max-height: 300px; /* Límite de altura con scroll */
+  overflow-y: auto; /* Habilita scroll si hay muchos resultados */
+  display: none; /* Ocultar por defecto */
+  padding: 0; /* Sin espacio adicional */
+}
+#search-results .list-group-item {
+  padding: 10px 15px; /* Espaciado interno */
+  border-bottom: 1px solid #eee; /* Separación entre elementos */
+  cursor: pointer; /* Cambiar el cursor al pasar */
+}
+#search-results .list-group-item:last-child {
+  border-bottom: none; /* Sin borde en el último elemento */
+}
+#search-results .list-group-item:hover {
+  background-color: #f8f9fa; /* Efecto hover */
+}
+
+#search-input{
+  left: 560px; /* Alineado con el input */
+  width: 1000px;
+}
+
+#top-books, #genres-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+#search-results {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
