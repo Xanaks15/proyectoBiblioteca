@@ -90,44 +90,50 @@ document.addEventListener('DOMContentLoaded', () => {
       if (result.success) {
         // Si el inicio de sesión es exitoso, ocultar el login y mostrar el perfil
         alert('Inicio de sesión exitoso');
-        const { id_miembro,nombre, correo, fecha_registro } = result.user;
-        $('#memberId').val(id_miembro);
-        // Cambiar el texto del dropdown a 'Perfil'
-        $('#navbarDropdown').html('Perfil ' + nombre);
+        if(rol === 'bibliotecario' ){
+
+        }else{
+          let { id_miembro,nombre} = result.user;
+          $('#memberId').val(id_miembro);
+          // Cambiar el texto del dropdown a 'Perfil'
+          $('#navbarDropdown').html('Perfil ' + nombre);
+          
+          // Actualizar el dropdown para que solo muestre las opciones de perfil
+          $('#navbarDropdown').attr('data-toggle', 'dropdown');
         
-        // Actualizar el dropdown para que solo muestre las opciones de perfil
-        $('#navbarDropdown').attr('data-toggle', 'dropdown');
-      
-        // Ocultar los formularios de inicio de sesión y registro
-        $('#form-login').hide();
-        $('#form-register').hide();
-      
-        // Ocultar el contenedor del dropdown original
-        $('.dropdown-menu.show').hide();
-      
-        // Reducir el tamaño del dropdown-menu mediante la propiedad CSS 'max-height'
-        $('#navbarDropdown').parent().find('.dropdown-menu').css({
-          'max-height': '100px', // Reducir la altura máxima del dropdown
-          'max-width': '100px',
-          'overflow-y': 'auto',   // Añadir scroll si es necesario
-          'padding': '5px',       // Reducir el padding para que el contenido ocupe menos espacio
-          'font-size': '14px'     // Reducir el tamaño de la fuente para hacerlo más compacto
-        });
-      
-        // Mostrar las opciones de perfil con el nuevo tamaño reducido
-        $('#navbarDropdown').after(`
+          // Ocultar los formularios de inicio de sesión y registro
+          $('#form-login').hide();
+          $('#form-register').hide();
+        
+          // Ocultar el contenedor del dropdown original
+          $('.dropdown-menu.show').hide();
+        
+          // Reducir el tamaño del dropdown-menu mediante la propiedad CSS 'max-height'
+          $('#navbarDropdown').parent().find('.dropdown-menu').css({
+            'max-height': '100px', // Reducir la altura máxima del dropdown
+            'max-width': '100px',
+            'overflow-y': 'auto',   // Añadir scroll si es necesario
+            'padding': '5px',       // Reducir el padding para que el contenido ocupe menos espacio
+            'font-size': '14px'     // Reducir el tamaño de la fuente para hacerlo más compacto
+          });
+        
+          // Mostrar las opciones de perfil con el nuevo tamaño reducido
+          $('#navbarDropdown').after(`
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#" id="view-loans">Ver Préstamos</a>
+            <a class="dropdown-item view-loans" href="#">Ver Préstamos</a>
             <a class="dropdown-item" href="#" id="logout">Cerrar Sesión</a>
           </div>
-        `);
-        
-        $(document).on('click', '.view-loans', function() {
+          `);
+  
+          // Añadir el evento para el enlace "Ver Préstamos"
+          $(document).on('click', '.view-loans', function() {
           // Obtener el valor del memberId
           const memberId = $('#memberId').val();  // Usamos jQuery para obtener el valor del input
-          
+  
           // Verificar que memberId tiene un valor
           if (memberId) {
+            console.log("memberId: ", memberId);  // Verifica en la consola si el valor es correcto
+            
             // Crear un formulario dinámico
             const form = $('<form>', {
               'method': 'POST',
@@ -140,28 +146,22 @@ document.addEventListener('DOMContentLoaded', () => {
               'name': 'memberId',
               'value': memberId
             }).appendTo(form);
-        
+  
             // Agregar el formulario al body y enviarlo
             form.appendTo('body').submit();
           } else {
             console.error("El memberId no tiene valor.");
           }
-        });
-        
-        
-        
-
-        // Añadir eventos a los botones
-        $('#view-loans').click(function() {
-          alert('Ver préstamos'); // Aquí puedes redirigir a la página de préstamos o mostrar información relevante
-        });
-      
-        $('#logout').click(function() {
+          });
+  
+          // Añadir eventos para los botones de logout
+          $('#logout').click(function() {
           // Implementar logout
           alert('Cerrar sesión');
-          // Redirigir a la página de logout si es necesario o eliminar el token de sesión
-        });
-        
+          // Redirigir a la página de logout o eliminar el token de sesión según sea necesario
+          });
+        }
+
       } else {
         // Si hay un error en el inicio de sesión
         alert(result.error || 'Hubo un problema al iniciar sesión');

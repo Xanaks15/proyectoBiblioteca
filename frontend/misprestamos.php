@@ -145,20 +145,20 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+   
+  <?php
+        $memberId = isset($_POST['memberId']) ? $_POST['memberId'] : null;
+  ?>
   <script>
     // Capturar el parámetro memberId de la URL
     document.addEventListener('DOMContentLoaded', () => {
-      const memberId = <?php echo $_POST['memberId'] ?? 'null'; ?>; // Ahora obtienes el memberId desde POST
-
-      const loansContainer = document.getElementById('loans-list'); // Contenedor donde se mostrarán los préstamos
-
-      // Verificar si se obtuvo el memberId
+      const loansContainer = document.getElementById('loans-list');
+      const memberId = <?php echo json_encode($memberId); ?>;
+      console.log('memberId:', memberId);
       if (!memberId) {
-        alert('No se proporcionó el ID del miembro');
-        return;
-      }
-
+    console.error('El memberId no tiene valor.');
+    return;
+  }
       // Realizar la petición para obtener los préstamos del miembro
       fetch('../backend/prestamos-member.php', {
         method: 'POST',
@@ -166,8 +166,8 @@
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ usuario_id: memberId }) // Pasar los datos como JSON en el cuerpo de la solicitud
+        
       })
-
         .then(response => response.json())
         .then(loans => {
           // Verificar si la respuesta contiene un array de préstamos
@@ -183,8 +183,8 @@
                 loansContainer.innerHTML += `
                   <li class="list-group-item">
                     <div>
-                      <div class="loan-title">${loan.Titulo_Libro}</div>  
-                      <div><strong>Autor:</strong> ${loan.Nombre_Autor}</div>
+                      <div class="loan-title">${loan.Titulo}</div>  
+                      <div><strong>Autor:</strong> ${loan.Autor}</div>
                       <div><strong>Fecha de Préstamo:</strong> ${loan.Fecha_Prestamo}</div>
                     <div><strong>Fecha de Publicacion:</strong> ${loan.Fecha_Publicacion}</div>
                     </div>
@@ -208,25 +208,37 @@
     
     // Función para manejar la devolución
     function returnBook(bookId) {
-      if (confirm('¿Estás seguro de que deseas devolver este libro?')) {
-        // Llamada al backend para procesar la devolución
-        fetch(`../backend/devolucion-book.php?bookId=${bookId}`, { method: 'POST' })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              alert('Devolución exitosa');
-              location.reload(); // Recargar la página para actualizar la lista de préstamos
-            } else {
-              alert('Hubo un problema con la devolución');
-              console.log(data.message);
-            }
-          })
-          .catch(error => {
-            console.error('Error al procesar la devolución:', error);
-            alert('Hubo un error con la devolución');
-          });
+  if (confirm('¿Estás seguro de que deseas devolver este libro?')) {
+    // Crear el objeto de datos para enviar
+    const data = {
+      bookId: bookId
+    };
+
+    // Llamada al backend para procesar la devolución
+    fetch('../backend/devolucion-book.php', {
+      method: 'POST', // Usar el método POST
+      headers: {
+        'Content-Type': 'application/json' // Especificar que el cuerpo es JSON
+      },
+      body: JSON.stringify(data) // Convertir el objeto en JSON y enviarlo
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert('Devolución exitosa');
+        location.reload(); // Recargar la página para actualizar la lista de préstamos
+      } else {
+        alert('Hubo un problema con la devolución');
+        console.log(data.message);
       }
-    }
+    })
+    .catch(error => {
+      console.error('Error al procesar la devolución:', error);
+      alert('Hubo un error con la devolución');
+    });
+  }
+}
+
   </script>
 </body>
 </html>

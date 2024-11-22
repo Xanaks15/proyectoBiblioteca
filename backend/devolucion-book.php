@@ -1,39 +1,37 @@
 <?php
-// Incluir el archivo de configuración y conexión
-include_once __DIR__ . '/myapi/DataBase.php';
+// Asegurarse de que el contenido sea JSON
+header('Content-Type: application/json');
 
-// Obtener el ID del préstamo desde el frontend
-if (isset($_POST['bookId'])) {
-    $prestamo_id = intval($_POST['bookId']); // ID del préstamo a devolver
+try {
+    // Leer los datos enviados en el cuerpo de la solicitud
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    try {
-        // Instanciar la conexión
-        $db = new DataBase();
-        $con = $db->getConnection();
-
-        // Consulta SQL para actualizar el préstamo con la fecha de devolución
+    // Verificar que 'bookId' esté presente en los datos
+    if (isset($input['bookId'])) {
+        $bookId = intval($input['bookId']); // Asegurarse de que sea un entero
+        $estadoBook=4;
         $sql = "UPDATE Prestamo
-                SET Fecha_Devolucion = GETDATE(), Estado = 'devuelto'
-                WHERE ID_Prestamo = :prestamo_id AND ID_Estado = '1'";
+        SET Fecha_Devolucion = NOW(),
+            ID_Estado = :estadoBook
+        WHERE ID_Prestamo = :bookId";
 
-        // Preparar la consulta
         $stmt = $con->prepare($sql);
-        $stmt->bindParam(':prestamo_id', $prestamo_id, PDO::PARAM_INT);
+        $stmt->bindParam(':bookId', $bookId, PDO::PARAM_INT);
+        $stmt->bindParam(':estadoBook', $estadoBook, PDO::PARAM_INT);
 
-        // Ejecutar la consulta
-        $stmt->execute();
-
-        // Verificar si la devolución se realizó correctamente
-        if ($stmt->rowCount() > 0) {
-            echo json_encode(['message' => 'Devolución registrada correctamente.']);
+        if ($stmt->execute()) {
+            // Respuesta de éxito
+            echo json_encode(['success' => true]);
         } else {
-            echo json_encode(['error' => 'No se pudo realizar la devolución. Verifica el ID del préstamo o el estado del mismo.']);
+            // Error al ejecutar la consulta
+            echo json_encode(['success' => false, 'message' => 'No se pudo actualizar el estado del libro.']);
         }
-    } catch (PDOException $e) {
-        // Manejar errores y retornar mensaje
-        echo json_encode(['error' => 'Error al realizar la devolución: ' . $e->getMessage()]);
+    } else {
+        // Error: No se envió 'bookId'
+        echo json_encode(['success' => false, 'message' => 'ID de libro no proporcionado.']);
     }
-} else {
-    echo json_encode(['error' => 'No se proporcionó el ID del préstamo.']);
+} catch (Exception $e) {
+    // Capturar errores generales y devolverlos
+    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
 }
 ?>

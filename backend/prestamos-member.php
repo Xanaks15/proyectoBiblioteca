@@ -3,6 +3,7 @@
 include_once __DIR__ . '/myapi/DataBase.php';
 
 header('Content-Type: application/json');
+$inputData = json_decode(file_get_contents('php://input'), true);
 
 try {
     // Instanciar la conexión
@@ -10,28 +11,12 @@ try {
     $con = $db->getConnection();
 
     // Verificar si se recibió el ID del usuario
-    if (isset($_POST['usuario_id'])) {
-        $usuario_id = intval($_GET['usuario_id']); // Obtener el ID del usuario y convertirlo a entero
+    if (isset($inputData['usuario_id'])) {
+        $usuario_id = intval($inputData['usuario_id']);  // Obtener el ID del usuario y convertirlo a entero
 
         // Consulta SQL para obtener los préstamos activos de un usuario
-        $sql = "SELECT 
-        M.Nombre AS Nombre_Miembro,
-        L.Titulo AS Titulo_Libro,
-        L.Fecha_Publicacion,
-        P.Fecha_Prestamo,
-        P.Fecha_Devolucion,
-        I.ID_Libro AS ID_Libro
-        FROM 
-            Prestamo P
-        JOIN 
-            Miembro M ON P.ID_Miembro = M.ID_Miembro
-        JOIN 
-            Libro L ON P.ID_Libro = L.ID_Libro
-        JOIN 
-            InventarioLibros I ON L.ID_Libro = I.ID_Libro
-        WHERE 
-            M.ID_Miembro = :usuario_id
-        "; // Suponiendo que 'usuario_id' es el identificador del usuario
+        $sql = "SELECT * FROM dbo.vw_HistorialPrestamosPorUsuario WHERE ID_Miembro = :usuario_id";  // Completar la condición
+        
         
         $stmt = $con->prepare($sql);
         $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
