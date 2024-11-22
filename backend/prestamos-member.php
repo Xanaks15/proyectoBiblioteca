@@ -9,24 +9,51 @@ try {
     $db = new DataBase();
     $con = $db->getConnection();
 
-    // Consulta para obtener los préstamos activos de un usuario desde dbo.vw_PrestamosActivos
-    $sql = "SELECT FROM = libro, fecha_prestamo
-            FROM dbo.vw_PrestamosActivos 
-            WHERE usuario_id = :usuario_id"; // Suponiendo que 'usuario_id' es el identificador del usuario
-    $stmt = $con->prepare($sql);
-    $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
+    // Verificar si se recibió el ID del usuario
+    if (isset($_GET['usuario_id'])) {
+        $usuario_id = intval($_GET['usuario_id']); // Obtener el ID del usuario y convertirlo a entero
 
-    // Suponiendo que tienes una forma de obtener el ID del usuario, aquí lo deberías asignar.
-    $usuario_id = 1; // Aquí pon el ID del usuario logueado
+        // Consulta SQL para obtener los préstamos activos de un usuario
+        $sql = "SELECT 
+        M.Nombre AS Nombre_Miembro,
+        M.Correo,
+        L.Titulo AS Titulo_Libro,
+        L.Fecha_Publicacion,
+        P.Fecha_Prestamo,
+        P.Fecha_Devolucion,
+        I.Numero_Copias
+        FROM 
+            Prestamo P
+        JOIN 
+            Miembro M ON P.ID_Miembro = M.ID_Miembro
+        JOIN 
+            Libro L ON P.ID_Libro = L.ID_Libro
+        JOIN 
+            InventarioLibros I ON L.ID_Libro = I.ID_Libro
+        WHERE 
+            M.ID_Miembro = :usuario_id
+        "; // Suponiendo que 'usuario_id' es el identificador del usuario
+        
+        $stmt = $con->prepare($sql);
+        $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
 
-    // Ejecutar la consulta
-    $stmt->execute();
+        // Ejecutar la consulta
+        $stmt->execute();
 
-    // Obtener resultados
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Obtener los resultados
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Retornar resultados como JSON
-    echo json_encode($result);
+        // Verificar si hay resultados
+        if ($result) {
+            // Retornar los resultados como JSON
+            echo json_encode($result);
+        } else {
+            echo json_encode(['error' => 'No se encontraron préstamos activos para el usuario.']);
+        }
+    } else {
+        // Si no se recibe el 'usuario_id', retornar un mensaje de error
+        echo json_encode(['error' => 'No se proporcionó el ID del usuario.']);
+    }
 
 } catch (PDOException $e) {
     // Manejar errores y retornar mensaje

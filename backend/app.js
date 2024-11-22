@@ -90,9 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (result.success) {
         // Si el inicio de sesión es exitoso, ocultar el login y mostrar el perfil
         alert('Inicio de sesión exitoso');
-        
+        const { id_miembro,nombre, correo, fecha_registro } = result.user;
+        $('#memberId').val(id_miembro);
         // Cambiar el texto del dropdown a 'Perfil'
-        $('#navbarDropdown').html('Perfil');
+        $('#navbarDropdown').html('Perfil ' + nombre);
         
         // Actualizar el dropdown para que solo muestre las opciones de perfil
         $('#navbarDropdown').attr('data-toggle', 'dropdown');
@@ -120,6 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
             <a class="dropdown-item" href="#" id="logout">Cerrar Sesión</a>
           </div>
         `);
+        const viewLoansButton = document.getElementById('view-loans');
+        viewLoansButton.addEventListener('click', () => {
+        const memberId = document.getElementById('memberId').value;
+
+        // Redirigir a la página de préstamos con el ID del miembro (opcional)
+        window.location.href = `misprestamos.php?memberId=${memberId}`;
+        });
       
         // Añadir eventos a los botones
         $('#view-loans').click(function() {
@@ -131,8 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
           alert('Cerrar sesión');
           // Redirigir a la página de logout si es necesario o eliminar el token de sesión
         });
-        const product = JSON.parse(response);
-        console.log(product);
+        
       } else {
         // Si hay un error en el inicio de sesión
         alert(result.error || 'Hubo un problema al iniciar sesión');
@@ -185,6 +192,14 @@ $('#search-input').keyup(function () {
   } else {
       $('#search-results').fadeOut(); // Esconde el desplegable si no hay texto
   }
+  // Redirigir al hacer clic en "Ver Préstamos Activos"
+  const viewLoansButton = document.getElementById('view-loans');
+  viewLoansButton.addEventListener('click', () => {
+    const memberId = document.getElementById('memberId').value;
+
+    // Redirigir a la página de préstamos con el ID del miembro (opcional)
+    window.location.href = `misprestamos.html?memberId=${memberId}`;
+  });
 });
 
 // Ocultar el desplegable si haces clic fuera
