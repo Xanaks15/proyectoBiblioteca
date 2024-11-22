@@ -1,37 +1,44 @@
 <?php
+include_once __DIR__ . '/myapi/DataBase.php';
+
 // Asegurarse de que el contenido sea JSON
 header('Content-Type: application/json');
 
 try {
     // Leer los datos enviados en el cuerpo de la solicitud
-    $input = json_decode(file_get_contents('php://input'), true);
+    $data = json_decode(file_get_contents('php://input'), true);
 
-    // Verificar que 'bookId' esté presente en los datos
-    if (isset($input['bookId'])) {
-        $bookId = intval($input['bookId']); // Asegurarse de que sea un entero
-        $estadoBook=4;
+    if (isset($data['ID_Prestamo'])) {
+        $ID_Prestamo = intval($data['ID_Prestamo']); // Convertir a entero
+        $estadoBook = 4; // Nuevo estado
+        $fechaDevolucion = date('Y-m-d H:i:s'); // Fecha y hora actual
+
+        // Conexión a la base de datos// Asegúrate de que el archivo de conexión sea correcto
+
+        // Consulta SQL
         $sql = "UPDATE Prestamo
-        SET Fecha_Devolucion = NOW(),
-            ID_Estado = :estadoBook
-        WHERE ID_Prestamo = :bookId";
-
+                SET ID_Estado = :estadoBook
+                WHERE ID_Prestamo = :ID_Prestamo";
+        $db = new DataBase();
+        $con = $db->getConnection();
         $stmt = $con->prepare($sql);
-        $stmt->bindParam(':bookId', $bookId, PDO::PARAM_INT);
-        $stmt->bindParam(':estadoBook', $estadoBook, PDO::PARAM_INT);
 
+        // Asignar parámetros
+        $stmt->bindParam(':estadoBook', $estadoBook, PDO::PARAM_INT);
+        $stmt->bindParam(':ID_Prestamo', $ID_Prestamo, PDO::PARAM_INT);
+
+        // Ejecutar consulta
         if ($stmt->execute()) {
-            // Respuesta de éxito
-            echo json_encode(['success' => true]);
+            echo json_encode(['success' => true, 'message' => 'Libro devuelto correctamente']);
         } else {
-            // Error al ejecutar la consulta
+            // Ver el error de SQL
             echo json_encode(['success' => false, 'message' => 'No se pudo actualizar el estado del libro.']);
         }
     } else {
-        // Error: No se envió 'bookId'
-        echo json_encode(['success' => false, 'message' => 'ID de libro no proporcionado.']);
+        echo json_encode(['success' => false, 'message' => 'ID de Prestamo no proporcionado.']);
     }
 } catch (Exception $e) {
-    // Capturar errores generales y devolverlos
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    // Manejar excepciones y errores
+    echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
 ?>

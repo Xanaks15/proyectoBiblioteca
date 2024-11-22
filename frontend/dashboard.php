@@ -97,6 +97,16 @@
     <input type="text" class="form-control d-inline" id="search-input" placeholder="Buscar por libro o autor..." style="width: 100%;">
     <button class="btn btn-outline-dark" id="search-button">Buscar</button>
     <div id="search-results"></div> <!-- Contenedor de los resultados -->
+
+    <div class="col-md-3 border p-3 rounded shadow-sm" id="selected-book" style="display: non; left: 50px; top:30px">
+      <div id="book-info" class="" style="text-align:start">
+        <!-- Detalles del libro se llenarán aquí -->
+      </div>
+      <div>
+          <button id="request-loan" class="btn btn-success">Solicitar Préstamo</button>
+        </div>
+    </div>
+
   </div>
 
 

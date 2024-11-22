@@ -1,5 +1,6 @@
+$('#selected-book').hide();
+const loggeado= false;
 const form = document.getElementById('form-register');
-
 form.addEventListener('submit', (e) => {
   e.preventDefault(); // Evitar el envío por defecto del formulario
 
@@ -93,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(rol === 'bibliotecario' ){
 
         }else{
+          loggeado=true;
           let { id_miembro,nombre} = result.user;
           $('#memberId').val(id_miembro);
           // Cambiar el texto del dropdown a 'Perfil'
@@ -186,7 +188,7 @@ $('#search-input').keyup(function () {
           success: function (response) {
               const data = JSON.parse(response);
               let resultsHTML = '';
-
+              console.log(data);
               if (data.length > 0) {
                   data.forEach(item => {
                       resultsHTML += `
@@ -203,17 +205,54 @@ $('#search-input').keyup(function () {
 
               // Habilitar clic en los resultados
               $('.list-group-item').click(function () {
-                  const selectedText = $(this).text();
-                  alert(`Seleccionaste: ${selectedText}`);
+                const itemText = $(this).text();
+                
+                // Dividir el texto usando el guion como delimitador
+                const parts = itemText.split(' - ');  // Separar por " - "
+                
+                // Obtener solo el título (antes del guion)
+                const bookTitle = parts[0].trim();  // .trim() para eliminar posibles espacios
+
+                // Mostrar el título del libro en la consola
+                // Obtener los detalles del libro seleccionado desde el backend (aquí puedes adaptarlo a tu lógica)
+                $.ajax({
+                  url: 'http://localhost/proyectoBiblioteca/backend/disponibles-book.php',  // Aquí se hace la consulta para obtener los detalles
+                  type: 'POST',
+                  data: JSON.stringify({ name_libro: bookTitle }),
+                  contentType: 'application/json', 
+                  success: function (response) {
+                    const book = response.data[0];  // Asegúrate de que la respuesta sea JSON
+                    console.log(book);
+                    // Mostrar los detalles del libro en el contenedor
+                    $('#selected-book').show(); // Hacer visible el contenedor
+                    $('#book-info').html(`
+                      <h4>Detalles del libro</h4>
+                      <p><strong>Título:</strong> ${book.Titulo}</p>
+                      <p><strong>Autor:</strong> ${book.Autor}</p>
+                      <p><strong>Género:</strong> ${book.Genero}</p>
+                      <p><strong>Disponibles:</strong> ${book.CopiasDisponibles}</p>
+                    `);
+              
+                    // Establecer el ID del libro en el botón de solicitud de préstamo
+                    $('#request-loan').data('libro-id', book.ID_Libro); // Ahora usamos ID_Libro que es el campo correcto
+                    $('#request-loan').show();
+                    $('#search-results').hide(); 
+                  },
+                  error: function () {
+                    alert('Error al obtener los detalles del libro.');
+                  }
+                });
               });
           },
           error: function () {
               $('#search-results').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
           }
+          
       });
   } else {
       $('#search-results').fadeOut(); // Esconde el desplegable si no hay texto
   }
+
   // Redirigir al hacer clic en "Ver Préstamos Activos"
   const viewLoansButton = document.getElementById('view-loans');
   viewLoansButton.addEventListener('click', () => {
@@ -231,6 +270,8 @@ $(document).click(function (event) {
       $('#search-results').fadeOut();
   }
 });
+
+
 
 // Carga inicial
 $(document).ready(function () {

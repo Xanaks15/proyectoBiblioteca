@@ -118,7 +118,7 @@
 <body>
   <nav class="navbar navbar-expand-lg">
     <a class="navbar-brand" href="#">BUAP</a>
-    <a class="navbar-brand" href="#">Biblioteca Virtual</a>
+    <a class="navbar-brand" href="dashboard.php">Biblioteca Virtual</a>
     <a class="navbar-brand" href="#">Mis Prestamos</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -179,20 +179,26 @@
               $id = loans[loans.length - 1];
               console.log("Contenido de loans:", loans);
               loansContainer.innerHTML = '';
-              loans.forEach(loan => {
+              // Filtrar los préstamos para excluir los libros devueltos
+              const activeLoans = loans.filter(loan => loan.Estado_Descripcion !== 'Devuelto');
+
+              // Iterar solo sobre los préstamos activos
+              activeLoans.forEach(loan => {
                 loansContainer.innerHTML += `
                   <li class="list-group-item">
                     <div>
-                      <div class="loan-title">${loan.Titulo}</div>  
+                      <div class="loan-title">${loan.Titulo_Libro}</div>  
                       <div><strong>Autor:</strong> ${loan.Autor}</div>
                       <div><strong>Fecha de Préstamo:</strong> ${loan.Fecha_Prestamo}</div>
-                    <div><strong>Fecha de Publicacion:</strong> ${loan.Fecha_Publicacion}</div>
+                      <div><strong>Estado:</strong> ${loan.Estado_Descripcion}</div>
+                      <div><strong>Fecha de Publicación:</strong> ${loan.Fecha_Publicacion}</div>
+                      <div><strong>Fecha de Devolución:</strong> ${loan.Fecha_Devolución || 'Pendiente'}</div>
                     </div>
-                    <button class="return-button" onclick="returnBook(${loan.ID_Libro})">Realizar Devolución</button>
+                    <button class="return-button" onclick="returnBook(${loan.ID_Prestamo})">Realizar Devolución</button>
                   </li>
-                `;
-              });
-            }
+                  `;
+                });
+              }
           } else if (loans.error) {
             // Si hay un error en la respuesta
             loansContainer.innerHTML = `<p>Error: ${loans.error}</p>`;
@@ -207,37 +213,38 @@
     });
     
     // Función para manejar la devolución
-    function returnBook(bookId) {
-  if (confirm('¿Estás seguro de que deseas devolver este libro?')) {
-    // Crear el objeto de datos para enviar
-    const data = {
-      bookId: bookId
-    };
-
-    // Llamada al backend para procesar la devolución
-    fetch('../backend/devolucion-book.php', {
-      method: 'POST', // Usar el método POST
-      headers: {
-        'Content-Type': 'application/json' // Especificar que el cuerpo es JSON
-      },
-      body: JSON.stringify(data) // Convertir el objeto en JSON y enviarlo
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        alert('Devolución exitosa');
-        location.reload(); // Recargar la página para actualizar la lista de préstamos
-      } else {
-        alert('Hubo un problema con la devolución');
-        console.log(data.message);
+      function returnBook(ID_Prestamo) {
+        console.log(ID_Prestamo);
+        if (confirm('¿Estás seguro de que deseas devolver este libro?')) {
+        // Crear el objeto de datos para enviar
+        const data = {
+          ID_Prestamo: ID_Prestamo
+        };
+        // console.log(data);
+        // Llamada al backend para procesar la devolución
+        fetch('../backend/devolucion-book.php', {
+          method: 'POST', // Usar el método POST
+          headers: {
+            'Content-Type': 'application/json' // Especificar que el cuerpo es JSON
+          },
+          body: JSON.stringify(data) // Convertir el objeto en JSON y enviarlo
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Devolución exitosa');
+            location.reload(); // Recargar la página para actualizar la lista de préstamos
+          } else {
+            alert('Hubo un problema con la devolución');
+            console.log(data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error al procesar la devolución:', error);
+          alert('Hubo un error con la devolución');
+        });
       }
-    })
-    .catch(error => {
-      console.error('Error al procesar la devolución:', error);
-      alert('Hubo un error con la devolución');
-    });
   }
-}
 
   </script>
 </body>
