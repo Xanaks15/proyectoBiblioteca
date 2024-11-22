@@ -121,14 +121,36 @@ document.addEventListener('DOMContentLoaded', () => {
             <a class="dropdown-item" href="#" id="logout">Cerrar Sesión</a>
           </div>
         `);
-        const viewLoansButton = document.getElementById('view-loans');
-        viewLoansButton.addEventListener('click', () => {
-        const memberId = document.getElementById('memberId').value;
-
-        // Redirigir a la página de préstamos con el ID del miembro (opcional)
-        window.location.href = `misprestamos.php?memberId=${memberId}`;
+        
+        $(document).on('click', '.view-loans', function() {
+          // Obtener el valor del memberId
+          const memberId = $('#memberId').val();  // Usamos jQuery para obtener el valor del input
+          
+          // Verificar que memberId tiene un valor
+          if (memberId) {
+            // Crear un formulario dinámico
+            const form = $('<form>', {
+              'method': 'POST',
+              'action': 'misprestamos.php'
+            });
+            
+            // Crear un campo de entrada oculto con el valor de memberId
+            $('<input>', {
+              'type': 'hidden',
+              'name': 'memberId',
+              'value': memberId
+            }).appendTo(form);
+        
+            // Agregar el formulario al body y enviarlo
+            form.appendTo('body').submit();
+          } else {
+            console.error("El memberId no tiene valor.");
+          }
         });
-      
+        
+        
+        
+
         // Añadir eventos a los botones
         $('#view-loans').click(function() {
           alert('Ver préstamos'); // Aquí puedes redirigir a la página de préstamos o mostrar información relevante
@@ -234,6 +256,5 @@ function cargarTopLibros() {
     },
   });
 }
-
 
 

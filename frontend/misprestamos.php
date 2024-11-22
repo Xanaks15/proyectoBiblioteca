@@ -149,7 +149,8 @@
   <script>
     // Capturar el parámetro memberId de la URL
     document.addEventListener('DOMContentLoaded', () => {
-      const memberId = new URLSearchParams(window.location.search).get('memberId'); // Obtener el ID del miembro desde la URL
+      const memberId = <?php echo $_POST['memberId'] ?? 'null'; ?>; // Ahora obtienes el memberId desde POST
+
       const loansContainer = document.getElementById('loans-list'); // Contenedor donde se mostrarán los préstamos
 
       // Verificar si se obtuvo el memberId
@@ -159,7 +160,14 @@
       }
 
       // Realizar la petición para obtener los préstamos del miembro
-      fetch(`../backend/prestamos-member.php?usuario_id=${memberId}`)
+      fetch('../backend/prestamos-member.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ usuario_id: memberId }) // Pasar los datos como JSON en el cuerpo de la solicitud
+      })
+
         .then(response => response.json())
         .then(loans => {
           // Verificar si la respuesta contiene un array de préstamos
@@ -168,6 +176,7 @@
               loansContainer.innerHTML = '<p>No tienes préstamos activos.</p>';
             } else {
               // Mostrar los préstamos
+              $id = loans[loans.length - 1];
               console.log("Contenido de loans:", loans);
               loansContainer.innerHTML = '';
               loans.forEach(loan => {
@@ -196,12 +205,12 @@
           loansContainer.innerHTML = '<p>Hubo un error al cargar los préstamos.</p>';
         });
     });
-
+    
     // Función para manejar la devolución
     function returnBook(bookId) {
       if (confirm('¿Estás seguro de que deseas devolver este libro?')) {
         // Llamada al backend para procesar la devolución
-        fetch(`../backend/devolucion.php?bookId=${bookId}`, { method: 'POST' })
+        fetch(`../backend/devolucion-book.php?bookId=${bookId}`, { method: 'POST' })
           .then(response => response.json())
           .then(data => {
             if (data.success) {
@@ -209,6 +218,7 @@
               location.reload(); // Recargar la página para actualizar la lista de préstamos
             } else {
               alert('Hubo un problema con la devolución');
+              console.log(data.message);
             }
           })
           .catch(error => {

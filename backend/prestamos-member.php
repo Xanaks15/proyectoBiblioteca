@@ -10,18 +10,17 @@ try {
     $con = $db->getConnection();
 
     // Verificar si se recibió el ID del usuario
-    if (isset($_GET['usuario_id'])) {
+    if (isset($_POST['usuario_id'])) {
         $usuario_id = intval($_GET['usuario_id']); // Obtener el ID del usuario y convertirlo a entero
 
         // Consulta SQL para obtener los préstamos activos de un usuario
         $sql = "SELECT 
         M.Nombre AS Nombre_Miembro,
-        M.Correo,
         L.Titulo AS Titulo_Libro,
         L.Fecha_Publicacion,
         P.Fecha_Prestamo,
         P.Fecha_Devolucion,
-        I.Numero_Copias
+        I.ID_Libro AS ID_Libro
         FROM 
             Prestamo P
         JOIN 
