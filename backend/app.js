@@ -1,5 +1,5 @@
 $('#selected-book').hide();
-const loggeado= false;
+let loggeado= false;
 const form = document.getElementById('form-register');
 form.addEventListener('submit', (e) => {
   e.preventDefault(); // Evitar el envío por defecto del formulario
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
           // Verificar que memberId tiene un valor
           if (memberId) {
-            console.log("memberId: ", memberId);  // Verifica en la consola si el valor es correcto
+            // console.log("memberId: ", memberId);  // Verifica en la consola si el valor es correcto
             
             // Crear un formulario dinámico
             const form = $('<form>', {
@@ -188,7 +188,7 @@ $('#search-input').keyup(function () {
           success: function (response) {
               const data = JSON.parse(response);
               let resultsHTML = '';
-              console.log(data);
+              // console.log(data);
               if (data.length > 0) {
                   data.forEach(item => {
                       resultsHTML += `
@@ -222,11 +222,10 @@ $('#search-input').keyup(function () {
                   contentType: 'application/json', 
                   success: function (response) {
                     const book = response.data[0];  // Asegúrate de que la respuesta sea JSON
-                    console.log(book);
+                    // console.log(book);
                     // Mostrar los detalles del libro en el contenedor
                     $('#selected-book').show(); // Hacer visible el contenedor
                     $('#book-info').html(`
-                      <h4>Detalles del libro</h4>
                       <p><strong>Título:</strong> ${book.Titulo}</p>
                       <p><strong>Autor:</strong> ${book.Autor}</p>
                       <p><strong>Género:</strong> ${book.Genero}</p>
@@ -236,7 +235,7 @@ $('#search-input').keyup(function () {
                     // Establecer el ID del libro en el botón de solicitud de préstamo
                     $('#request-loan').data('libro-id', book.ID_Libro); // Ahora usamos ID_Libro que es el campo correcto
                     $('#request-loan').show();
-                    $('#search-results').hide(); 
+                    
                   },
                   error: function () {
                     alert('Error al obtener los detalles del libro.');
@@ -253,14 +252,6 @@ $('#search-input').keyup(function () {
       $('#search-results').fadeOut(); // Esconde el desplegable si no hay texto
   }
 
-  // Redirigir al hacer clic en "Ver Préstamos Activos"
-  const viewLoansButton = document.getElementById('view-loans');
-  viewLoansButton.addEventListener('click', () => {
-    const memberId = document.getElementById('memberId').value;
-
-    // Redirigir a la página de préstamos con el ID del miembro (opcional)
-    window.location.href = `misprestamos.html?memberId=${memberId}`;
-  });
 });
 
 // Ocultar el desplegable si haces clic fuera
@@ -271,7 +262,57 @@ $(document).click(function (event) {
   }
 });
 
+// Evento para procesar el préstamo de un libro
+$('#request-loan').click(function () {
+  // Obtener el ID del libro desde el botón
+  const bookId = $(this).data('libro-id');
+  const memberId = $('#memberId').val(); // ID del miembro logueado
 
+  // Validar que el usuario esté logueado y que se haya seleccionado un libro
+  if (!loggeado) {
+    alert('Debe iniciar sesión para solicitar un préstamo.');
+    return;
+  }
+
+  if (!bookId || !memberId) {
+    alert('Error al procesar el préstamo. Intente nuevamente.');
+    return;
+  }
+
+  // Crear el objeto de datos para enviar al servidor
+  const requestData = {
+    bookId: bookId,
+    memberId: memberId
+  };
+
+  console.log(requestData);
+
+  // Enviar solicitud al backend
+  $.ajax({
+    url: 'http://localhost/proyectoBiblioteca/backend/prestamos-book.php', // Archivo PHP para procesar el préstamo
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(requestData),
+    success: function (response) {
+      if (response.success) {
+        alert('Préstamo procesado correctamente.');
+        // Actualizar las copias disponibles en la interfaz
+        const remainingCopies = response.remainingCopies;
+        $('#book-info').find('p:contains("Disponibles")').html(`<strong>Disponibles:</strong> ${remainingCopies}`);
+        
+        // Ocultar el botón si ya no hay copias disponibles
+        if (remainingCopies <= 0) {
+          $('#request-loan').hide();
+        }
+      } else {
+        alert(response.message || 'Hubo un problema al procesar el préstamo.');
+      }
+    },
+    error: function () {
+      alert('Error al conectar con el servidor. Intente nuevamente.');
+    }
+  });
+});
 
 // Carga inicial
 $(document).ready(function () {

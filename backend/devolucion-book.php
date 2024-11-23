@@ -17,7 +17,7 @@ try {
 
         // Consulta SQL
         $sql = "UPDATE Prestamo
-                SET ID_Estado = :estadoBook
+                SET ID_Estado = :estadoBook, FechaDevolucion = :fechaDevolucion
                 WHERE ID_Prestamo = :ID_Prestamo";
         $db = new DataBase();
         $con = $db->getConnection();
