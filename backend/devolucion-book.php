@@ -10,9 +10,7 @@ try {
 
     if (isset($data['ID_Prestamo'])) {
         $ID_Prestamo = intval($data['ID_Prestamo']); // Convertir a entero
-        $estadoBook = 4; // Nuevo estado
-
-        // Conexión a la base de datos// Asegúrate de que el archivo de conexión sea correcto
+        $estadoBook = 4; // Nuevo estado del libro (Devuelto)
 
         // Consulta SQL
         $sql = "UPDATE Prestamo
