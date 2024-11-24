@@ -92,7 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Si el inicio de sesión es exitoso, ocultar el login y mostrar el perfil
         alert('Inicio de sesión exitoso');
         if(rol === 'bibliotecario' ){
-
+          
+          window.location.href = 'bibliotecario.php';
         }else{
           loggeado=true;
           let { id_miembro,nombre} = result.user;
@@ -110,22 +111,15 @@ document.addEventListener('DOMContentLoaded', () => {
           // Ocultar el contenedor del dropdown original
           $('.dropdown-menu.show').hide();
         
-          // Reducir el tamaño del dropdown-menu mediante la propiedad CSS 'max-height'
-          $('#navbarDropdown').parent().find('.dropdown-menu').css({
-            'max-height': '100px', // Reducir la altura máxima del dropdown
-            'max-width': '100px',
-            'overflow-y': 'auto',   // Añadir scroll si es necesario
-            'padding': '5px',       // Reducir el padding para que el contenido ocupe menos espacio
-            'font-size': '14px'     // Reducir el tamaño de la fuente para hacerlo más compacto
-          });
-        
           // Mostrar las opciones de perfil con el nuevo tamaño reducido
           $('#navbarDropdown').after(`
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <div class="dropdown-menu"  aria-labelledby="navbarDropdown">
             <a class="dropdown-item view-loans" href="#">Ver Préstamos</a>
-            <a class="dropdown-item" href="#" id="logout">Cerrar Sesión</a>
+            <a class="dropdown-item" href="dashboard.php" id="logout">Cerrar Sesión</a>
           </div>
           `);
+          // reducir el largo del dropdown
+          $('#dropdown-menu').css('width','50px');
   
           // Añadir el evento para el enlace "Ver Préstamos"
           $(document).on('click', '.view-loans', function() {
@@ -154,13 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
           } else {
             console.error("El memberId no tiene valor.");
           }
-          });
-  
-          // Añadir eventos para los botones de logout
-          $('#logout').click(function() {
-          // Implementar logout
-          alert('Cerrar sesión');
-          // Redirigir a la página de logout o eliminar el token de sesión según sea necesario
           });
         }
 

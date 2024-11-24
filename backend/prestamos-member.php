@@ -26,7 +26,6 @@ try {
 
         // Obtener los resultados
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
         // Verificar si hay resultados
         if ($result) {
             // Retornar los resultados como JSON

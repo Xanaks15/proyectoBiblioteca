@@ -96,9 +96,15 @@ body {
   font-weight: bold;
 }
 
-.form-group {
-  width: 100%;
+.form-group{
+  width: 30%;
+  left: 40vh;
+  margin: 0 auto;
+  justify-content: flex-start;
+  align-items: center;
   margin-bottom: 15px; /* Agregar margen inferior */
+  margin-top: 15px;
+  text-align: start;
 }
 
 .form-group label {
@@ -174,4 +180,14 @@ body {
   overflow-y: auto;
 }
 
+#action-container {
+  width: 96%; /* Cambia al ancho deseado */
+  max-width: 1900px; /* Define un ancho máximo si es necesario */
+  height: auto;
+  margin: 0 auto; /* Centra el contenedor horizontalmente */
+  display: none; /* Inicialmente oculto */
+}
 
+.back-arrow:hover {
+  color: #0056b3;
+}

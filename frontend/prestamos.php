@@ -122,7 +122,7 @@
   <nav class="navbar navbar-expand-lg">
     <a class="navbar-brand" href="#">BUAP</a>
     <a class="navbar-brand" href="dashboard.php">Biblioteca Virtual</a>
-    <a class="navbar-brand" href="#">Mis Prestamos</a>
+    <a class="navbar-brand" href="#">Préstamos de: <span id="user-name"></span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -140,7 +140,8 @@
       </ul>
     </div>
   </nav>
-
+  <div class="header-section">
+  </div>
   <div class="container">
     <ul id="loans-list" class="list-group"></ul>
   </div>
@@ -151,6 +152,8 @@
    
   <?php
         $memberId = isset($_POST['memberId']) ? $_POST['memberId'] : null;
+        $memberName = isset($_POST['memberName']) ? $_POST['memberName'] : null;
+        echo "<script>document.getElementById('user-name').textContent = '$memberName';</script>";
   ?>
   <script>
     // Capturar el parámetro memberId de la URL
@@ -188,7 +191,7 @@
               // Iterar solo sobre los préstamos activos
               activeLoans.forEach(loan => {
                 loansContainer.innerHTML += `
-                  <li class="list-group-item">
+                <li class="list-group-item">
                     <div>
                       <div class="loan-title">${loan.Titulo_Libro}</div>  
                       <div><strong>Autor:</strong> ${loan.Autor}</div>
@@ -197,9 +200,8 @@
                       <div><strong>Fecha de Publicación:</strong> ${loan.Fecha_Publicacion}</div>
                       <div><strong>Fecha de Devolución:</strong> ${loan.Fecha_Devolución || 'Pendiente'}</div>
                     </div>
-                    <button class="return-button" onclick="returnBook(${loan.ID_Prestamo})">Realizar Devolución</button>
-                  </li>
-                  `;
+                </li>
+                `;
                 });
               }
           } else if (loans.error) {

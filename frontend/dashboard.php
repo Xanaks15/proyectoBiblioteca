@@ -82,11 +82,11 @@
         </ul>
       </div>
     </nav>
-    <div id="profile-section" class="container" style="display:none;">
+    <!-- <div id="profile-section" class="container" style="display:none;">
       <h2>Bienvenido, <span id="user-name"></span></h2>
       <button id="view-loans" class="btn btn-primary">Ver Préstamos Activos</button>
       <div id="loans-list"></div>
-    </div>
+    </div> -->
 
   
     <div class="subheader-section">
@@ -96,10 +96,10 @@
     <div class="search-section" style="position: relative;"> 
       <input type="text" class="form-control d-inline" id="search-input" placeholder="Buscar por libro o autor..." style="width: 100%;">
       <button class="btn btn-outline-dark" id="search-button">Buscar</button>
-      <div id="search-results" style="position: absolute"></div> <!-- Contenedor de los resultados -->
+      <div id="search-results"></div> <!-- Contenedor de los resultados -->
     </div>
 
-    <div class="col-md-3 border p-3 rounded shadow-sm"  id="selected-book" style="display: flexbox; align-items: center; left: 50px; top:30px">
+    <div class="col-md-3 border p-3 rounded shadow-sm"  id="selected-book" style="display: flexbox; align-items: center; left: 80px; top:30px">
       <h4 style="text-align: center;">Detalles del libro</h4>
       <div id="book-info" class="" style= "text-align:start">
         <!-- Detalles del libro se llenarán aquí -->

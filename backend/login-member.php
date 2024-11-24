@@ -1,6 +1,7 @@
 <?php
 // Incluir la clase DataBase para la conexión a la base de datos
 include_once __DIR__ . '/myapi/DataBase.php';
+
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (isset($data['email']) && isset($data['password'])) {
@@ -10,13 +11,12 @@ if (isset($data['email']) && isset($data['password'])) {
     $email = $data['email'];
     $password = $data['password'];
 
-    // Preparar la consulta utilizando marcadores de posición
-    $query = "SELECT id_miembro, nombre, correo, fecha_registro FROM Miembro WHERE correo = :correo AND contraseña = :password";
+    // Preparar la consulta para obtener el hash almacenado
+    $query = "SELECT id_miembro, nombre, correo, fecha_registro, contraseña FROM Miembro WHERE correo = :correo";
     $pps = $connection->prepare($query);
 
     // Asignar los valores a los marcadores
     $pps->bindParam(':correo', $email, PDO::PARAM_STR);
-    $pps->bindParam(':password', $password, PDO::PARAM_STR);
 
     // Ejecutar la consulta
     $pps->execute();
@@ -26,11 +26,21 @@ if (isset($data['email']) && isset($data['password'])) {
 
     // Comprobar si se encontró el usuario
     if ($data2) {
-        echo json_encode([
-            'success' => true,
-            'message' => 'Inicio de sesión exitoso',
-            'user' => $data2
-        ], JSON_UNESCAPED_UNICODE);
+        $hashAlmacenado = $data2['contraseña']; // Hash almacenado en la base de datos
+
+        // Verificar la contraseña ingresada contra el hash
+        if (password_verify($password, $hashAlmacenado)) {
+            // Eliminar la contraseña antes de enviar la respuesta
+            unset($data2['contraseña']);
+            
+            echo json_encode([
+                'success' => true,
+                'message' => 'Inicio de sesión exitoso',
+                'user' => $data2
+            ], JSON_UNESCAPED_UNICODE);
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Contraseña incorrecta'], JSON_UNESCAPED_UNICODE);
+        }
     } else {
         echo json_encode(['success' => false, 'message' => 'Usuario no encontrado'], JSON_UNESCAPED_UNICODE);
     }
