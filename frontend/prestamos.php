@@ -61,7 +61,6 @@
 
   #loans-list li {
     display: flex;
-    justify-content: space-between; /* Espacio entre los elementos */
     align-items: center; /* Alinea el contenido verticalmente */
     padding: 15px; /* Espacio interno */
     border-bottom: 1px solid #ddd; /* Línea divisoria entre elementos */

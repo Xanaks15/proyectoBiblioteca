@@ -17,7 +17,6 @@ try {
         // Consulta SQL para obtener los préstamos activos de un usuario
         $sql = "SELECT * FROM dbo.vw_HistorialPrestamosPorUsuario WHERE ID_Miembro = :usuario_id";  // Completar la condición
         
-        
         $stmt = $con->prepare($sql);
         $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
 

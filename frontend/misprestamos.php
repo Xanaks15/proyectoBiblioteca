@@ -192,9 +192,9 @@
                     <div>
                       <div class="loan-title">${loan.Titulo_Libro}</div>  
                       <div><strong>Autor:</strong> ${loan.Autor}</div>
+                      <div><strong>Fecha de Publicación:</strong> ${loan.Fecha_Publicacion}</div>
                       <div><strong>Fecha de Préstamo:</strong> ${loan.Fecha_Prestamo}</div>
                       <div><strong>Estado:</strong> ${loan.Estado_Descripcion}</div>
-                      <div><strong>Fecha de Publicación:</strong> ${loan.Fecha_Publicacion}</div>
                       <div><strong>Fecha de Devolución:</strong> ${loan.Fecha_Devolución || 'Pendiente'}</div>
                     </div>
                     <button class="return-button" onclick="returnBook(${loan.ID_Prestamo})">Realizar Devolución</button>

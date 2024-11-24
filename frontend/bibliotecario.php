@@ -25,6 +25,7 @@
 
     #action-container {
       display: none; /* Inicialmente oculto */
+      position: absolute;
     }
 
     .save-book{
@@ -71,6 +72,22 @@
     text-align: center; /* Centra el texto dentro de los elementos *//
     }
 
+    .search-results-author {
+        position: absolute; /* Para que se posicione debajo del input */
+        top: 50%; /* Justo debajo del input */
+        left: 565px; /* Alineado con el input */
+        width: 405px; /* Mismo ancho del input */
+        z-index: 1000; /* Sobre otros elementos */
+        background-color: white; /* Fondo blanco para destacar */
+        border: 1px solid #ccc; /* Bordes del desplegable */
+        border-radius: 0 0 5px 5px; /* Bordes redondeados en la parte inferior */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para efecto flotante */
+        max-height: 300px; /* Límite de altura con scroll */
+        overflow-y: auto; /* Habilita scroll si hay muchos resultados */
+        display: none; /* Ocultar por defecto */
+        padding: 0; /* Sin espacio adicional */
+    }
+
   </style>
 </head>
 <body>
@@ -106,9 +123,15 @@
   <!-- Contenedor de acciones -->
     <div id="action-container" class="container-fluid mt-1">
     
+        <!-- Ver todos los miembro -->
+        <div id="view-users-section" style="display: none;">
+            <h3>Lista de Miembros</h3>
+            <div id="users-list" class="row 4"></div>
+        </div>
+
         <!-- Sección Ver Usuarios -->
         <div id="view-users-section" style="display: none;">
-            <h3>Lista de Miembros por Actividad</h3>
+            <h3>Miembros Más Activos</h3>
             <div id="users-list" class="row 4"></div>
         </div>
 
@@ -129,7 +152,7 @@
                 <div class="form-group">
                 <label for="book-author">Autor</label>
                 <input type="text" id="book-author" class="form-control" placeholder="Ingrese el autor" required>
-                <div id="search-results"></div>
+                <div id="search-results-author"></div>
               </div>
                 <div class="form-group">
                     <label>
@@ -171,7 +194,7 @@
                     </label>
                 </div>
                  <!-- Campo para nuevo género (inicialmente oculto) -->
-                <div id="new-genre-field" class="form-group" style="display:none;">
+                <div id="new-genre-field" style="display:none;">
                     <label for="new-genre">Especificar nuevo género:</label>
                     <input type="text" id="new-genre" name="NuevoGenero" placeholder="Nuevo género">
                 </div>       

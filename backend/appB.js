@@ -255,18 +255,18 @@ $('#book-author').keyup(function () {
                         `;
                     });
   
-                    $('#search-results').html(resultsHTML).fadeIn(); // Muestra el desplegable
+                    $('#search-results-author').html(resultsHTML).fadeIn(); // Muestra el desplegable
                 } else {
-                    $('#search-results').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
+                    $('#search-results-author').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
                 }
             },
             error: function () {
-                $('#search-results').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
+                $('#search-results-author').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
             }
             
         });
     } else {
-        $('#search-results').fadeOut(); // Esconde el desplegable si no hay texto
+        $('#search-results-author').fadeOut(); // Esconde el desplegable si no hay texto
     }
   
   });

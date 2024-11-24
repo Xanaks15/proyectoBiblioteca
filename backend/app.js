@@ -304,7 +304,6 @@ $('#request-loan').click(function () {
 // Carga inicial
 $(document).ready(function () {
   cargarTopLibros();
-
 });
 
 // Función para cargar los libros más prestados

@@ -1,71 +1,89 @@
 <?php
-include_once __DIR__ . '/myapi/DataBase.php';
+header("Content-Type: application/json");
 
-// Asegurarse de que el contenido sea JSON
-header('Content-Type: application/json');
+require_once 'db_connection.php'; // Archivo que contiene la conexión a la base de datos
 
 try {
-    // Leer los datos enviados en el cuerpo de la solicitud
-    $data = json_decode(file_get_contents('php://input'), true);
+    // Leer los datos del cuerpo de la solicitud
+    $input = json_decode(file_get_contents('php://input'), true);
 
-    // Validar los campos requeridos
-    if (isset($data['Titulo'], $data['FechaPublicacion'], $data['ID_Genero'], $data['Autor'], $data['Copias'])) {
-        $Titulo = $data['Titulo'];
-        $FechaPublicacion = $data['FechaPublicacion'];
-        $ID_Genero = intval($data['ID_Genero']);
-        $Autor = $data['Autor']; // Un solo autor
-        $Copias = intval($data['Copias']); // Número de copias
+    // Validar los campos básicos
+    if (!isset($input['Titulo'], $input['FechaPublicacion'], $input['Copias'])) {
+        echo json_encode(['success' => false, 'message' => 'Faltan datos obligatorios.']);
+        exit;
+    }
 
-        // Iniciar la conexión con la base de datos
-        $db = new DataBase();
-        $con = $db->getConnection();
+    $titulo = $input['Titulo'];
+    $fechaPublicacion = $input['FechaPublicacion'];
+    $copias = intval($input['Copias']);
 
-        // Iniciar una transacción para asegurarse de que ambos INSERTs sean exitosos
-        $con->beginTransaction();
+    // Manejo de autor
+    $nuevoAutor = isset($input['NuevoAutor']) ? $input['NuevoAutor'] : null;
+    $idAutor = isset($input['ID_Autor']) ? intval($input['ID_Autor']) : null;
 
-        // Insertar en la tabla Libro
-        $sqlLibro = "INSERT INTO Libro (Titulo, Fecha_Publicacion, ID_Genero) 
-                     VALUES (:Titulo, :FechaPublicacion, :ID_Genero)";
-        $stmtLibro = $con->prepare($sqlLibro);
-        $stmtLibro->bindParam(':Titulo', $Titulo);
-        $stmtLibro->bindParam(':FechaPublicacion', $FechaPublicacion);
-        $stmtLibro->bindParam(':ID_Genero', $ID_Genero);
-        $stmtLibro->bindParam(':Copias', $Copias);
+    // Manejo de género
+    $nuevoGenero = isset($input['NuevoGenero']) ? $input['NuevoGenero'] : null;
+    $idGenero = isset($input['ID_Genero']) ? intval($input['ID_Genero']) : null;
 
-        $sqlCopias = "INSERT INTO InventarioLibros (ID_Libro, Numero_Copias) 
-                     VALUES (:ID_Libro, :Copias)"; 
-        $stmtCopias = $con->prepare($sqlCopias);
-        if ($stmtLibro->execute()) {
-            // Obtener el ID del libro recién insertado
-            $ID_Libro = $con->lastInsertId();
+    // Iniciar conexión con la base de datos
+    $conn = new PDO('mysql:host=localhost;dbname=biblioteca', 'root', '');
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-            // Insertar el autor
-            $sqlAutor = "INSERT INTO LibroAutor(ID_Autor, ID_Libro) 
-                         VALUES (:NombreAutor, :ID_Libro)";
-            $stmtAutor = $con->prepare($sqlAutor);
-            $stmtAutor->bindParam(':ID_Autor', $Autor);
-            $stmtAutor->bindParam(':ID_Libro', $ID_Libro);
+    // Iniciar transacción
+    $conn->beginTransaction();
 
-            // Ejecutar la consulta para el autor
-            if ($stmtAutor->execute()) {
-                // Confirmar la transacción
-                $con->commit();
-                echo json_encode(['success' => true, 'message' => 'Libro y autor registrados correctamente.']);
-            } else {
-                // Si falla la inserción del autor, cancelar la transacción
-                $con->rollBack();
-                echo json_encode(['success' => false, 'message' => 'No se pudo registrar el autor.']);
-            }
+    // Procesar nuevo autor si es necesario
+    if ($nuevoAutor) {
+        $stmtAutor = $conn->prepare("INSERT INTO Autor (Nombre, FechaNacimiento, Nacionalidad) VALUES (:nombre, :fechaNacimiento, :nacionalidad)");
+        $stmtAutor->bindParam(':nombre', $nuevoAutor['Nombre']);
+        $stmtAutor->bindParam(':fechaNacimiento', $nuevoAutor['FechaNacimiento']);
+        $stmtAutor->bindParam(':nacionalidad', $nuevoAutor['Nacionalidad']);
+
+        if ($stmtAutor->execute()) {
+            $idAutor = $conn->lastInsertId(); // Obtener el ID del autor recién creado
         } else {
-            // Si falla el INSERT del libro
-            echo json_encode(['success' => false, 'message' => 'No se pudo registrar el libro.']);
+            throw new Exception('Error al agregar el nuevo autor.');
         }
+    }
+
+    // Procesar nuevo género si es necesario
+    if ($nuevoGenero) {
+        $stmtGenero = $conn->prepare("INSERT INTO Genero (Nombre) VALUES (:nombre)");
+        $stmtGenero->bindParam(':nombre', $nuevoGenero);
+
+        if ($stmtGenero->execute()) {
+            $idGenero = $conn->lastInsertId(); // Obtener el ID del género recién creado
+        } else {
+            throw new Exception('Error al agregar el nuevo género.');
+        }
+    }
+
+    // Validar que ahora se tenga un ID de autor y un ID de género
+    if (!$idAutor || !$idGenero) {
+        throw new Exception('Falta el ID de autor o género.');
+    }
+
+    // Insertar en la tabla Libro
+    $stmtLibro = $conn->prepare("INSERT INTO Libro (Titulo, FechaPublicacion, Copias, ID_Autor, ID_Genero) 
+                                 VALUES (:titulo, :fechaPublicacion, :copias, :idAutor, :idGenero)");
+    $stmtLibro->bindParam(':titulo', $titulo);
+    $stmtLibro->bindParam(':fechaPublicacion', $fechaPublicacion);
+    $stmtLibro->bindParam(':copias', $copias);
+    $stmtLibro->bindParam(':idAutor', $idAutor);
+    $stmtLibro->bindParam(':idGenero', $idGenero);
+
+    if ($stmtLibro->execute()) {
+        $conn->commit(); // Confirmar transacción
+        echo json_encode(['success' => true, 'message' => 'Libro agregado correctamente.']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Datos incompletos o inválidos.']);
+        throw new Exception('Error al agregar el libro.');
     }
 } catch (Exception $e) {
-    // Manejar excepciones y errores
+    // Revertir la transacción en caso de error
+    if ($conn->inTransaction()) {
+        $conn->rollBack();
+    }
+
     echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
-
 ?>

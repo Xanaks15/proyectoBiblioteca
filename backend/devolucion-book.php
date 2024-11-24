@@ -11,13 +11,12 @@ try {
     if (isset($data['ID_Prestamo'])) {
         $ID_Prestamo = intval($data['ID_Prestamo']); // Convertir a entero
         $estadoBook = 4; // Nuevo estado
-        $fechaDevolucion = date('Y-m-d H:i:s'); // Fecha y hora actual
 
         // Conexión a la base de datos// Asegúrate de que el archivo de conexión sea correcto
 
         // Consulta SQL
         $sql = "UPDATE Prestamo
-                SET ID_Estado = :estadoBook, FechaDevolucion = :fechaDevolucion
+                SET ID_Estado = :estadoBook, Fecha_Devolucion = GETDATE()
                 WHERE ID_Prestamo = :ID_Prestamo";
         $db = new DataBase();
         $con = $db->getConnection();
