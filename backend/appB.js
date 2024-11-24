@@ -19,13 +19,13 @@ $(document).ready(function () {
             membersHtml += `
                 <div class="col-md-2 mb-4">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body" style="height: 210px;">
                         <h5 class="card-title">${member.nombre}</h5>
                         <p class="card-text"><strong>Correo:</strong> ${member.correo}</p>
                         <p class="card-text"><strong>Registrado:</strong> ${member.fecha_registro}</p>
                         <p class="card-text"><strong>Total Prestamos:</strong> ${member.total_prestamos}</p>
-                        <button class="btn btn-info view-loans" data-user-id="${member.id_miembro}" data-user-name="${member.nombre}">Ver Préstamos</button>
                     </div>
+                        <button class="btn btn-info view-loans" data-user-id="${member.id_miembro}" data-user-name="${member.nombre}">Ver Préstamos</button>
                 </div>
                 </div>`;
             });
@@ -133,7 +133,91 @@ $('#new-genre-checkbox').on('change', function() {
     }
 });
 
-// Enviar datos del formulario
+// Manejador para enviar el formulario de agregar libro
+$('#book-author').keyup(function () {
+    const search = $(this).val(); // Captura el valor del input
+    if (search) {
+        $.ajax({
+            url: 'http://localhost/proyectoBiblioteca/backend/search.php',
+            type: 'GET',
+            data: { query: search },
+            success: function (response) {
+                const data = JSON.parse(response);
+                let resultsHTML = '';
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        resultsHTML += `
+                            <div class="list-group-item" data-id="${item.id_autor}">
+                                ${item.autor}
+                            </div>
+                        `;
+                    });
+                    $('#search-results-author').html(resultsHTML).fadeIn(); // Muestra el desplegable
+
+                    // Evento al hacer clic en un resultado
+                    $('.list-group-item').click(function () {
+                        const nameAuthor = $(this).text(); // Obtener el texto seleccionado
+                        const authorId = $(this).data('id'); // Obtener el ID del autor
+                        $('#book-author').val(nameAuthor); // Asignar el texto al input
+                        $('#book-author').data('id', authorId); // Guardar el ID en el campo como atributo
+                        $('#search-results-author').fadeOut(); // Ocultar el desplegable
+                    });
+                } else {
+                    $('#search-results-author').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
+                }
+            },
+            error: function () {
+                $('#search-results-author').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
+            }
+        });
+    } else {
+        $('#search-results-author').fadeOut(); // Esconde el desplegable si no hay texto
+    }
+});
+
+
+  $('#book-genere').keyup(function () {
+    const search = $(this).val(); // Captura el valor del input
+    if (search) {
+        $.ajax({
+            url: 'http://localhost/proyectoBiblioteca/backend/search-genere.php',
+            type: 'GET',
+            data: { query: search },
+            success: function (response) {
+                const data = JSON.parse(response);
+                let resultsHTML = '';
+                console.log(data);
+                if (data.length > 0) {
+                    data.forEach(item => {
+                        resultsHTML += `
+                            <div class="list-group-item">
+                                ${item.Nombre}
+                            </div>
+                        `;
+                    });
+                    $('.list-group-item').click(function () {
+                        var name_genere = $(this).text();
+                        var genereId = data.find(item => item.Nombre === name_genere).ID_Genero; 
+                    });
+
+                    $('#search-results-gen').html(resultsHTML).fadeIn(); // Muestra el desplegable
+                } else {
+                    $('#search-results-gen').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
+                }
+            },
+            error: function () {
+                $('#search-results-gen').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
+            }
+            
+        });
+    } else {
+        $('#search-results-gen').fadeOut(); // Esconde el desplegable si no hay texto
+    }
+
+});
+
+
+  // Enviar datos del formulario
 $('#add-book-form').on('submit', function(e) {
     e.preventDefault();
     
@@ -196,118 +280,4 @@ $('#add-book-form').on('submit', function(e) {
         }
     });
 });
-
 });    
-
-$('#book-author').keyup(function () {
-    const search = $(this).val(); // Captura el valor del input
-    if (search) {
-        $.ajax({
-            url: 'http://localhost/proyectoBiblioteca/backend/search.php',
-            type: 'GET',
-            data: { query: search },
-            success: function (response) {
-                const data = JSON.parse(response);
-                let resultsHTML = '';
-                console.log(data);
-                if (data.length > 0) {
-                    data.forEach(item => {
-                        resultsHTML += `
-                            <div class="list-group-item">
-                                ${item.autor}
-                            </div>
-                        `;
-                    });
-  
-                    $('#search-results').html(resultsHTML).fadeIn(); // Muestra el desplegable
-                } else {
-                    $('#search-results').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
-                }
-            },
-            error: function () {
-                $('#search-results').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
-            }
-            
-        });
-    } else {
-        $('#search-results').fadeOut(); // Esconde el desplegable si no hay texto
-    }
-  
-  });
-  
-  $('#book-author').keyup(function () {
-    const search = $(this).val(); // Captura el valor del input
-    if (search) {
-        $.ajax({
-            url: 'http://localhost/proyectoBiblioteca/backend/search.php',
-            type: 'GET',
-            data: { query: search },
-            success: function (response) {
-                const data = JSON.parse(response);
-                let resultsHTML = '';
-                console.log(data);
-                if (data.length > 0) {
-                    data.forEach(item => {
-                        resultsHTML += `
-                            <div class="list-group-item">
-                                ${item.autor}
-                            </div>
-                        `;
-                    });
-  
-                    $('#search-results-author').html(resultsHTML).fadeIn(); // Muestra el desplegable
-                } else {
-                    $('#search-results-author').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
-                }
-            },
-            error: function () {
-                $('#search-results-author').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
-            }
-            
-        });
-    } else {
-        $('#search-results-author').fadeOut(); // Esconde el desplegable si no hay texto
-    }
-  
-  });
-
-  $('#book-genere').keyup(function () {
-    const search = $(this).val(); // Captura el valor del input
-    if (search) {
-        $.ajax({
-            url: 'http://localhost/proyectoBiblioteca/backend/search-genere.php',
-            type: 'GET',
-            data: { query: search },
-            success: function (response) {
-                const data = JSON.parse(response);
-                let resultsHTML = '';
-                console.log(data);
-                if (data.length > 0) {
-                    data.forEach(item => {
-                        resultsHTML += `
-                            <div class="list-group-item">
-                                ${item.Nombre}
-                            </div>
-                        `;
-                    });
-                    $('.list-group-item').click(function () {
-                        const name_genere = $(this).text();
-                        
-                        
-                      });
-  
-                    $('#search-results-gen').html(resultsHTML).fadeIn(); // Muestra el desplegable
-                } else {
-                    $('#search-results-gen').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
-                }
-            },
-            error: function () {
-                $('#search-results-gen').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
-            }
-            
-        });
-    } else {
-        $('#search-results').fadeOut(); // Esconde el desplegable si no hay texto
-    }
-  
-  });

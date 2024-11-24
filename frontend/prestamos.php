@@ -54,7 +54,6 @@
     max-width: 600px; /* Limita el ancho máximo de la lista */
     margin: 0 auto; /* Centra la lista dentro del contenedor */
     background-color: #f9f9f9; /* Fondo claro para la lista */
-    border: 1px solid #ddd; /* Borde suave */
     border-radius: 8px; /* Bordes redondeados */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
   }
@@ -120,8 +119,7 @@
 <body>
   <nav class="navbar navbar-expand-lg">
     <a class="navbar-brand" href="#">BUAP</a>
-    <a class="navbar-brand" href="dashboard.php">Biblioteca Virtual</a>
-    <a class="navbar-brand" href="#">Préstamos de: <span id="user-name"></span></a>
+    <a class="navbar-brand" style="text-align: center;" href="dashboard.php">Biblioteca Virtual</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -140,6 +138,7 @@
     </div>
   </nav>
   <div class="header-section">
+  <a class="header-section">Préstamos de <span id="user-name"></span></a>
   </div>
   <div class="container">
     <ul id="loans-list" class="list-group"></ul>

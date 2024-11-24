@@ -97,8 +97,9 @@ body {
 }
 
 .form-group{
+    z-index: 1000;
   width: 30%;
-  left: 40vh;
+  left: 35vh;
   margin: 0 auto;
   justify-content: flex-start;
   align-items: center;
@@ -133,6 +134,7 @@ body {
 
 .container {
   width: 600px;
+  height: 0vh;
 }
 
 /*resultados de busqueda
@@ -180,14 +182,17 @@ body {
   overflow-y: auto;
 }
 
-#action-container {
-  width: 96%; /* Cambia al ancho deseado */
-  max-width: 1900px; /* Define un ancho máximo si es necesario */
-  height: auto;
-  margin: 0 auto; /* Centra el contenedor horizontalmente */
-  display: none; /* Inicialmente oculto */
+#selected-book {
+  justify-content: center; /* Centra verticalmente *//* Mantén su posición absoluta si es necesario */
+  left: 50px; /* Ajusta según tu diseño */
+  top: 30px; /* Ajusta según tu diseño */
+  width: 300px; /* Define un ancho fijo o adecuado */
+  height: auto; /* Deja que ajuste la altura automáticamente */
+  text-align: center; /* Centra el texto dentro del contenedor */
 }
 
-.back-arrow:hover {
-  color: #0056b3;
+#request-loan {
+  margin-top: 15px; /* Añade espacio entre los detalles y el botón */
 }
+
+

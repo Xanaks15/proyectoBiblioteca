@@ -8,20 +8,20 @@
   <link rel="stylesheet" href="estilos.css"> 
   <style>
     #search-results {
-  position: absolute; /* Para que se posicione debajo del input */
-  top: 50%; /* Justo debajo del input */
-  left: 565px; /* Alineado con el input */
-  width: 405px; /* Mismo ancho del input */
-  z-index: 1000; /* Sobre otros elementos */
-  background-color: white; /* Fondo blanco para destacar */
-  border: 1px solid #ccc; /* Bordes del desplegable */
-  border-radius: 0 0 5px 5px; /* Bordes redondeados en la parte inferior */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para efecto flotante */
-  max-height: 300px; /* Límite de altura con scroll */
-  overflow-y: auto; /* Habilita scroll si hay muchos resultados */
-  display: none; /* Ocultar por defecto */
-  padding: 0; /* Sin espacio adicional */
-}
+      position: absolute; /* Para que se posicione debajo del input */
+      top: 50%; /* Justo debajo del input */
+      left: 565px; /* Alineado con el input */
+      width: 405px; /* Mismo ancho del input */
+      z-index: 1000; /* Sobre otros elementos */
+      background-color: white; /* Fondo blanco para destacar */
+      border: 1px solid #ccc; /* Bordes del desplegable */
+      border-radius: 0 0 5px 5px; /* Bordes redondeados en la parte inferior */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para efecto flotante */
+      max-height: 300px; /* Límite de altura con scroll */
+      overflow-y: auto; /* Habilita scroll si hay muchos resultados */
+      display: none; /* Ocultar por defecto */
+      padding: 0; /* Sin espacio adicional */
+    }
 
     #action-container {
       display: none; /* Inicialmente oculto */
@@ -46,24 +46,20 @@
     }
     .back-arrow {
         display: none;
-        top: 100%;
         cursor: pointer;
         font-size: 24px;
-        margin-bottom: 15px;
         color: #007bff;
+        padding-top: 2%;
+        padding-left: 2%;
+        position: relative;
     }
 
     .add-book-section{
+    height: 50vh;
+    position: fixed;
+    z-index: 1000;
+    position: absolute;
     width: 50%; /* Ajusta según sea necesario */
-    margin: 0 auto;
-    display: flex; /* Activa Flexbox */
-    flex-direction: column; /* Alinea los elementos en una columna */
-    align-items: center; /* Centra horizontalmente */
-    gap: 20px; /* Espacio entre elementos */
-    text-align: center; /* Centra el texto dentro de los elementos *//
-    }
-    .h3 {
-        width: 50%; /* Ajusta según sea necesario */
     margin: 0 auto;
     display: flex; /* Activa Flexbox */
     flex-direction: column; /* Alinea los elementos en una columna */
@@ -125,7 +121,7 @@
     
         <!-- Ver todos los miembro -->
         <div id="view-users-section" style="display: none;">
-            <h3>Lista de Miembros</h3>
+            <h3 style="text-align: center; padding-bottom: 2%">Lista de Miembros</h3>
             <div id="users-list" class="row 4"></div>
         </div>
 
