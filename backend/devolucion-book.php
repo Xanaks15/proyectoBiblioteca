@@ -20,7 +20,7 @@ try {
         $con = $db->getConnection();
         $stmt = $con->prepare($sql);
 
-        // Asignar parámetros
+        // Asignar parÃ¡metros
         $stmt->bindParam(':estadoBook', $estadoBook, PDO::PARAM_INT);
         $stmt->bindParam(':ID_Prestamo', $ID_Prestamo, PDO::PARAM_INT);
 
@@ -38,4 +38,3 @@ try {
     // Manejar excepciones y errores
     echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
 }
-?>

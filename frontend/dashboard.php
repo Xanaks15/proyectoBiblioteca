@@ -82,11 +82,7 @@
         </ul>
       </div>
     </nav>
-    <!-- <div id="profile-section" class="container" style="display:none;">
-      <h2>Bienvenido, <span id="user-name"></span></h2>
-      <button id="view-loans" class="btn btn-primary">Ver Préstamos Activos</button>
-      <div id="loans-list"></div>
-    </div> -->
+   
 
   
     <div class="subheader-section">

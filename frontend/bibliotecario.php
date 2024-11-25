@@ -138,8 +138,8 @@
         </div>
 
         <!-- Sección Agregar Libro -->
-        <div id="add-book-section">
-            <h3 class="form-group">Agregar un Nuevo Libro</h3>
+        <div id="add-book-section" class="form-group2">
+            <h3 >Agregar un Nuevo Libro</h3>
             <form id="add-book-form">
                 <div class="form-group">
                     <label for="book-title">Título del Libro</label>

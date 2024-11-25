@@ -133,7 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Crear un formulario dinámico
             const form = $('<form>', {
               'method': 'POST',
-              'action': 'misprestamos.php'
+              'action': 'misprestamos.php',
+              'target': '_blank'
             });
             
             // Crear un campo de entrada oculto con el valor de memberId
