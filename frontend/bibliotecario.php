@@ -180,7 +180,7 @@
                 </div>
                 <div class="form-group">
                   <label for="book-genere">Genero</label>
-                  <input type="text" id="book-genere" class="form-control" placeholder="Ingrese el genero" required>
+                  <input type="text" id="book-genere" class="form-control" placeholder="Ingrese el genero" >
                   <div id="search-results-gen"></div>
                 <div id="search-results-genere"></div>
                   <!-- Casilla para nuevo género -->
