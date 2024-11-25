@@ -138,7 +138,7 @@ $('#book-author').keyup(function () {
     const search = $(this).val(); // Captura el valor del input
     if (search) {
         $.ajax({
-            url: 'http://localhost/proyectoBiblioteca/backend/search.php',
+            url: 'http://localhost/proyectoBiblioteca/backend/search-autor.php',
             type: 'GET',
             data: { query: search },
             success: function (response) {
@@ -147,21 +147,26 @@ $('#book-author').keyup(function () {
                 if (data.length > 0) {
                     data.forEach(item => {
                         resultsHTML += `
-                            <div class="list-group-item" data-id="${item.id_autor}">
-                                ${item.autor}
+                            <div class="list-group-item" data-id="${item.ID_Autor}">
+                                ${item.Nombre}
                             </div>
                         `;
                     });
+                    
                     $('#search-results-author').html(resultsHTML).fadeIn(); // Muestra el desplegable
 
                     // Evento al hacer clic en un resultado
                     $('.list-group-item').click(function () {
-                        const nameAuthor = $(this).text(); // Obtener el texto seleccionado
+                        const nameAuthor =  $(this).text().trim(); // Obtener el texto seleccionado
                         const authorId = $(this).data('id'); // Obtener el ID del autor
                         $('#book-author').val(nameAuthor); // Asignar el texto al input
                         $('#book-author').data('id', authorId); // Guardar el ID en el campo como atributo
                         $('#search-results-author').fadeOut(); // Ocultar el desplegable
+                        console.log(nameAuthor);
+                        console.log($('#book-author').val()); // Ver el valor del input
+                        console.log($('#book-author').data('id')); 
                     });
+                    
                 } else {
                     $('#search-results-author').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
                 }
@@ -175,8 +180,7 @@ $('#book-author').keyup(function () {
     }
 });
 
-
-  $('#book-genere').keyup(function () {
+$('#book-genere').keyup(function () {
     const search = $(this).val(); // Captura el valor del input
     if (search) {
         $.ajax({
@@ -186,21 +190,25 @@ $('#book-author').keyup(function () {
             success: function (response) {
                 const data = JSON.parse(response);
                 let resultsHTML = '';
-                console.log(data);
                 if (data.length > 0) {
                     data.forEach(item => {
                         resultsHTML += `
-                            <div class="list-group-item">
+                            <div class="list-group-item" data-id="${item.ID_Genero}">
                                 ${item.Nombre}
                             </div>
                         `;
                     });
-                    $('.list-group-item').click(function () {
-                        var name_genere = $(this).text();
-                        var genereId = data.find(item => item.Nombre === name_genere).ID_Genero; 
-                    });
-
                     $('#search-results-gen').html(resultsHTML).fadeIn(); // Muestra el desplegable
+
+                    // Evento al hacer clic en un resultado
+                    $('.list-group-item').click(function () {
+                        console.log(data);
+                        const nameGenre =  $(this).text().trim();  // Obtener el texto seleccionado
+                        const genreId = $(this).data('id'); // Obtener el ID del género
+                        $('#book-genere').val(nameGenre); // Asignar el texto al input
+                        $('#book-genere').data('id', genreId); // Guardar el ID en el campo como atributo
+                        $('#search-results-gen').fadeOut(); // Ocultar el desplegable
+                    });
                 } else {
                     $('#search-results-gen').html('<div class="list-group-item text-muted">No se encontraron resultados</div>').fadeIn();
                 }
@@ -208,63 +216,79 @@ $('#book-author').keyup(function () {
             error: function () {
                 $('#search-results-gen').html('<div class="list-group-item text-muted">Error en la búsqueda</div>').fadeIn();
             }
-            
         });
     } else {
         $('#search-results-gen').fadeOut(); // Esconde el desplegable si no hay texto
     }
-
 });
 
-
   // Enviar datos del formulario
-$('#add-book-form').on('submit', function(e) {
+  $('#add-book-form').on('submit', function(e) {
     e.preventDefault();
-    
+
     const bookTitle = $('#book-title').val();
-    const bookGenre = $('#book-genre').val();  // Género seleccionado
     const bookPublisher = $('#book-publisher').val();
     const bookCopias = $('#book-copias').val();
-    
-    // Banderas para saber si se va a enviar un autor o género nuevo
+
+    // Banderas para autor y género
     const isNewAuthor = $('#new-author-checkbox').is(':checked');
     const isNewGenre = $('#new-genre-checkbox').is(':checked');
-    
+    // Datos de autor
+    const authorId = isNewAuthor ? null : $('#book-author').data('id'); // Obtiene el ID del autor seleccionado
     let newAuthor = null;
-    let newGenre = null;
-
-    // Si el autor es nuevo, obtenemos los datos del nuevo autor
+    
     if (isNewAuthor) {
+        // Si es un nuevo autor, prepara los datos
         newAuthor = {
             name: $('#author-name').val(),
             dob: $('#author-dob').val(),
             nationality: $('#author-nationality').val()
         };
     } else {
-        newAuthor = $('#book-author').val(); // Si no es nuevo, tomar el autor del campo
+        // Si es un autor seleccionado, obtén su nombre desde el campo
+        newAuthor = $('#book-author').val();
+        console.log(newAuthor);
     }
 
-    // Si el género es nuevo, obtenemos el nuevo género
+    // Datos de género
+    const genreId = isNewGenre ? null : $('#book-genere').data('id'); // Obtiene el ID del género seleccionado
+    let newGenre = null;
+    console.log(genreId);
     if (isNewGenre) {
-        newGenre = $('#new-genre').val();
+        // Si es un nuevo género, prepara los datos
+        newGenre = $('#new-genre').val(); // Suponiendo que hay un campo para el nuevo género
+    } else {
+        // Si es un género seleccionado, obtén su nombre desde el campo
+        newGenre = $('#book-genere').val();
+        console.log(newGenre);
     }
+    let agregar = {Titulo: bookTitle,
+        Autor: newAuthor,    // Enviar datos del nuevo autor, si aplica
+        AutorID: authorId,   // Enviar el ID del autor existente
+        FechaPublicacion: bookPublisher,
+        ID_Genero: genreId,  // Enviar el ID del género existente
+        NuevoGenero: newGenre, // Enviar el nuevo género, si aplica
+        Copias: bookCopias};
 
+        console.log(agregar);
     // Realizar la solicitud AJAX para agregar el libro
     $.ajax({
         url: 'http://localhost/proyectoBiblioteca/backend/add-book.php',
         type: 'POST',
         data: JSON.stringify({
             Titulo: bookTitle,
-            Autor: newAuthor,  // Enviar el autor, ya sea nuevo o el proporcionado
+            Autor: newAuthor,    // Enviar datos del nuevo autor, si aplica
+            AutorID: authorId,   // Enviar el ID del autor existente
             FechaPublicacion: bookPublisher,
-            ID_Genero: isNewGenre ? null : bookGenre,  // Si es un nuevo género, no enviar el ID del género
-            NuevoGenero: newGenre,  // Enviar el nuevo género si se activó la casilla
+            ID_Genero: genreId,  // Enviar el ID del género existente
+            NuevoGenero: newGenre, // Enviar el nuevo género, si aplica
             Copias: bookCopias
         }),
         contentType: 'application/json',
         success: function(response) {
             try {
-                const data = JSON.parse(response);
+                console.log(response);
+                const data = response;
                 if (data.success) {
                     alert('Libro agregado correctamente.');
                     $('#add-book-form').trigger('reset');
@@ -280,4 +304,4 @@ $('#add-book-form').on('submit', function(e) {
         }
     });
 });
-});    
+});

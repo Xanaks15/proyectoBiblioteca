@@ -11,7 +11,7 @@ if (isset($_GET['query'])) {
         $connection = $db->getConnection();
 
         $sql = "SELECT TOP 10 ID_Autor, Nombre FROM Autor
-                WHERE autor LIKE ?";
+                WHERE Nombre LIKE ?";
         $stmt = $connection->prepare($sql);
         $searchTerm = "%$search%";
         $stmt->execute([$searchTerm, $searchTerm]);

@@ -147,7 +147,7 @@
                 </div>
                 <div class="form-group">
                 <label for="book-author">Autor</label>
-                <input type="text" id="book-author" class="form-control" placeholder="Ingrese el autor" required>
+                <input type="text" id="book-author" class="form-control" placeholder="Ingrese el autor" >
                 <div id="search-results-author"></div>
               </div>
                 <div class="form-group">

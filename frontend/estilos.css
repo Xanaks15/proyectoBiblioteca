@@ -97,9 +97,8 @@ body {
 }
 
 .form-group{
-    z-index: 1000;
   width: 30%;
-  left: 35vh;
+  left: 40vh;
   margin: 0 auto;
   justify-content: flex-start;
   align-items: center;
@@ -134,7 +133,6 @@ body {
 
 .container {
   width: 600px;
-  height: 0vh;
 }
 
 /*resultados de busqueda
