@@ -33,10 +33,10 @@
     <div id="main-container" class="center-content">
         <h2>¿Qué deseas hacer hoy?</h2>
         <div class="mt-4">
-            <button id="view-users" class="btn btn-primary mx-2">Ver Miembros Más Activos</button>
+            <button id="view-users" class="btn btn-primary mx-2">Ver Miembros</button>
             <button id="add-book" class="btn btn-success mx-2">Agregar Libro</button>
             <button id="most-borrowed" class="btn btn-warning mx-2">Ver Libros Más Prestados</button>
-            <button id="all-books" class="btn btn-warning mx-2">Todos los Libros</button>
+            <button id="view-all-books" class="btn btn-warning mx-2">Todos los Libros</button>
         </div>
     </div>
 
@@ -45,7 +45,7 @@
     
         <!-- Ver todos los miembro -->
         <div id="view-users-section" style="display: none;">
-            <h3 style="text-align: center; padding-bottom: 2%">Lista de Miembros</h3>
+            <h3 style="text-align: center; padding-bottom: 2%">Lista de Miembros Por Actividad</h3>
             <div id="users-list" class="row 4"></div>
         </div>
 
@@ -67,6 +67,13 @@
             <h3 style="text-align: center; padding-bottom: 2%">Libros Más Prestados</h3>
             <div id="borrowed-books-list"></div>
         </div>  
+
+        <div class="container-2">
+        <div id="view-all-books-section" style="display: none;">
+            <h3 style="text-align: center; padding-bottom: 2%">Todos los Libros</h3>
+            <div id="all-books-list"></div>
+        </div>  
+        
         </div>
         <!-- Sección Agregar Libro -->
         <div id="add-book-section" class="form-group2">

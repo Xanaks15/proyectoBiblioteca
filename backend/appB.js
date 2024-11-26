@@ -324,4 +324,55 @@ $('#add-book').on('click', function () {
         }
     });
 });
+
+
+// Mostrar la flecha de regreso cuando se selecciona una acción
+$('#view-users, #add-book, #most-borrowed, .view-loans, #view-all-books').on('click', function () {
+    $('#back-to-menu').css('display', 'flex').hide().fadeIn(300); // Cambia a 'flex' y luego muestra con fadeIn
+});
+
+// Acción para la flecha de regreso
+$('#back-to-menu').on('click', function () {
+    // Ocultar la sección actual y regresar al menú principal
+    $('#action-container').fadeOut(300, function () {
+        $('#main-container').fadeIn(300); // Mostrar el contenedor principal
+        $('#back-to-menu').hide(); // Ocultar la flecha
+    });
+});
+
+$('#view-all-books').on('click', function () {
+    showSection('#view-all-books-section'); // Muestra la sección de todos los libros
+    $('#all-books-list').html('<p>Cargando libros...</p>'); // Indicador de carga
+    
+    $.ajax({
+        url: 'http://localhost/proyectoBiblioteca/backend/all-books.php',
+        type: 'GET',
+        dataType: 'json', // Asegúrate de que el backend envía JSON
+        success: function (response) {
+            if (response.length > 0) {
+                var booksHtml = '<div class="d-flex flex-wrap justify-content-center">';
+                response.forEach(function (book) {
+                    booksHtml += `
+                        <div class="card m-2" style="width: 300px;">
+                            <div class="card-body">
+                                <h5 class="card-title">${book.Nombre_Libro}</h5>
+                                <p class="card-text"><strong>Autor:</strong> ${book.Autor}</p>
+                                <p class="card-text"><strong>Género:</strong> ${book.Genero}</p>
+                                <p class="card-text"><strong>Cantidad de Copias:</strong> ${book.Cantidad_Copias}</p>
+                            </div>
+                        </div>`;
+                });
+                booksHtml += '</div>';
+                $('#all-books-list').html(booksHtml); // Inserta los libros en la sección
+            } else {
+                $('#all-books-list  ').html('<p>No hay libros disponibles.</p>');
+            }
+        },
+        error: function () {
+            $('#view-all-books').html('<p>Error al cargar los libros.</p>');
+        }
+    });
+});
+
+
 });

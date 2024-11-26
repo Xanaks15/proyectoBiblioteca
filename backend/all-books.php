@@ -10,7 +10,7 @@ try {
     $con = $db->getConnection();
 
     // Consulta para obtener los 5 libros más prestados
-    $sql = "SELECT TOP 10 libro, totalprestamos FROM dbo.vw_LibrosMasPrestados";
+    $sql = "SELECT * FROM dbo.vw_VistaInventarioLibros";
     $stmt = $con->prepare($sql);
 
     // Ejecutar la consulta

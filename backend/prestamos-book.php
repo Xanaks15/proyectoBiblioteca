@@ -38,11 +38,7 @@ try {
                 $stmtLoan->bindParam(':id_estado', $id_estado, PDO::PARAM_INT);
                 $stmtLoan->execute();
 
-                // // Actualizar las copias disponibles
-                // $updateCopies = "UPDATE InventarioLibros SET Numero_Copias = Numero_Copias - 1 WHERE ID_Libro = :bookId";
-                // $stmtUpdate = $con->prepare($updateCopies);
-                // $stmtUpdate->bindParam(':bookId', $bookId, PDO::PARAM_INT);
-                // $stmtUpdate->execute();
+                
 
                 // Confirmar transacción
                 $con->commit();

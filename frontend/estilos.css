@@ -183,6 +183,9 @@ body {
 #search-input{
   left: 560px; /* Alineado con el input */
   width: 1000px;
+  box-shadow: 0 0 10px rgba(255, 106, 106, 0.1); /* Sombra */
+  border: 1px solid #100f0f; /* Bordes ligeros */
+  border-radius: 10px; /* Bordes redondeados */
 }
 
 #top-books, #genres-list {
@@ -233,7 +236,7 @@ body {
     display: none;
     cursor: pointer;
     font-size: 24px;
-    color: #007bff;
+    color: #c81010;
     padding-top: 2%;
     padding-left: 2%;
     position: relative;
@@ -291,7 +294,8 @@ text-align: center; /* Centra el texto dentro de los elementos *//
 }
 
 .container-2 {
-  max-width: 1300px; /* Limita el ancho máximo a 1200px */
+  max-width: 1450px; /* Limita el ancho máximo a 1200px */
+  max-height: 520px;
   margin: 0 auto; /* Centra el contenedor horizontalmente */
   padding: 0 15px; /* Añade un pequeño padding para evitar que se pegue a los bordes */
   overflow-x: hidden; /* Evita desbordamientos horizontales */
@@ -321,4 +325,34 @@ text-align: center; /* Centra el texto dentro de los elementos *//
 
   .card-body {
     text-align: start;
+  }
+
+  /* Contenedor de la lista de libros a la derecha */
+  .book-list-container {
+    position: fixed; /* Fijamos la posición en el lado derecho */
+    top: 170px; /* Dejamos espacio desde el top */
+    right: 70px; /* Lo alineamos al borde derecho */
+    width: 400px; /* Ajustamos el tamaño de la lista */
+    max-height: 500px; /* Máxima altura para hacerlo scrollable */
+    overflow-y: auto; /* Añadimos desplazamiento vertical si hay más libros */
+    border: 1px solid #ccc; /* Bordes ligeros */
+    border-radius: 10px; /* Bordes redondeados */
+    padding: 10px;
+    background-color: #f9f9f9; /* Fondo claro */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+  }
+  .book-list-container h4 {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  .book-list-container ul {
+    list-style-type: none;
+    padding-left: 0;
+  }
+  .book-list-container ul li {
+    background-color: #f1f1f1;
+    margin-bottom: 10px;
+    padding: 8px;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }

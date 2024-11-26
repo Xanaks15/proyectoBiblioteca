@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
           // Mostrar las opciones de perfil con el nuevo tamaño reducido
           $('#navbarDropdown').after(`
           <div class="dropdown-menu"  aria-labelledby="navbarDropdown">
-            <a class="dropdown-item view-loans" href="#">Acciones Disponibles</a>
+            <a class="dropdown-item view-loans" href="#">Administración</a>
             <a class="dropdown-item" href="dashboard.php" id="logout">Cerrar Sesión</a>
           </div>
           `);
@@ -336,22 +336,61 @@ $(document).ready(function () {
 });
 
 // Función para cargar los libros más prestados
-function cargarTopLibros() {
-  $.ajax({
-    url: 'http://localhost/proyectoBiblioteca/backend/top-books.php', // Archivo PHP que consulta la vista [vw_LibrosMasPrestados]
-    method: 'GET',
-    dataType: 'json',
-    success: function (data) {
-      let topBooks = $('#top-books');
-      topBooks.empty(); // Limpiar la lista antes de llenarla
-      data.forEach(function (book) {
-        topBooks.append(`<li class="list-group-item">${book.libro}</li>`);
+$.ajax({
+  url: 'http://localhost/proyectoBiblioteca/backend/all-books.php', // Archivo PHP que consulta la vista [vw_LibrosMasPrestados]
+  method: 'GET',
+  dataType: 'json',
+  success: function (data) {
+    let topBooks = $('#book-list');
+    topBooks.empty(); // Limpiar la lista antes de llenarla
+    console.log(data);
+    data.forEach(function (book) {
+      // Verificar si el libro tiene copias disponibles
+      let disponibilidad = book.Cantidad_Copias > 0 ? "Disponible" : "No Disponible";
+
+      // Agregar el libro a la lista
+      $('#book-list').append(`
+        <li class="list-group-item" data-book-title="${book.Nombre_Libro}">
+          <strong>${book.Nombre_Libro}</strong> - <span class="${disponibilidad === 'Disponible' ? 'text-success' : 'text-danger'}">${disponibilidad}</span>
+        </li>
+      `);
+    });
+
+    // Agregar el evento de clic a los elementos de la lista
+    $('#book-list').on('click', 'li', function () {
+      const bookTitle = $(this).data('book-title'); // Obtener el título del libro seleccionado
+
+      $.ajax({
+        url: 'http://localhost/proyectoBiblioteca/backend/disponibles-book.php',  // Aquí se hace la consulta para obtener los detalles
+        type: 'POST',
+        data: JSON.stringify({ name_libro: bookTitle }),
+        contentType: 'application/json', 
+        success: function (response) {
+          const book = response.data[0];  // Asegúrate de que la respuesta sea JSON
+          // Mostrar los detalles del libro en el contenedor
+          $('#selected-book').show(); // Hacer visible el contenedor
+          $('#book-info').html(`
+            <p><strong>Título:</strong> ${book.Titulo}</p>
+            <p><strong>Autor:</strong> ${book.Autor}</p>
+            <p><strong>Género:</strong> ${book.Genero}</p>
+            <p><strong>Disponibles:</strong> ${book.CopiasDisponibles}</p>
+          `);
+
+          // Establecer el ID del libro en el botón de solicitud de préstamo
+          $('#request-loan').data('libro-id', book.ID_Libro); // Ahora usamos ID_Libro que es el campo correcto
+          $('#request-loan').show();
+          
+        },
+        error: function () {
+          alert('Error al obtener los detalles del libro.');
+        }
       });
-    },
-    error: function () {
-      console.error('Error al cargar los libros más prestados');
-    },
-  });
-}
+    });
+  },
+  error: function () {
+    console.error('Error al cargar los libros más prestados');
+  },
+});
+
 
 
