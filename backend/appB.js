@@ -19,7 +19,7 @@ $(document).ready(function () {
             membersHtml += `
                 <div class="col-md-2 mb-4">
                 <div class="card">
-                    <div class="card-body" style="height: 210px;">
+                    <div class="card-body" style="height: 205px;">
                         <h5 class="card-title">${member.nombre}</h5>
                         <p class="card-text"><strong>Correo:</strong> ${member.correo}</p>
                         <p class="card-text"><strong>Registrado:</strong> ${member.fecha_registro}</p>
@@ -70,41 +70,44 @@ $(document).on('click', '.view-loans', function () {
     }
 });
 
-
-    //agregar book
-    $('#add-book').on('click', function () {
-      showSection('#add-book-section');
+//top books
+// Mostrar la sección de Libros Más Prestados
+$('#most-borrowed').on('click', function () {
+    showSection('#most-borrowed-section'); // Mostrar sección específica
+  });
+  
+  // Mostrar la flecha de regreso cuando se selecciona una acción
+  $('#view-users, #add-book, #most-borrowed, .view-loans').on('click', function () {
+    $('#back-to-menu').css('display', 'flex').hide().fadeIn(300); // Mostrar la flecha con animación
+  });
+  
+  // Acción para la flecha de regreso
+  $('#back-to-menu').on('click', function () {
+    // Ocultar la sección actual y regresar al menú principal
+    $('#action-container').fadeOut(300, function () {
+      $('#main-container').fadeIn(300); // Mostrar el contenedor principal
+      $('#back-to-menu').hide(); // Ocultar la flecha
     });
-
-    $('#view-users, #add-book, .view-loans').on('click', function () {
-        $('#back-to-menu').css('display', 'flex').hide().fadeIn(300); // Cambia a 'flex' y luego muestra con fadeIn
-    });
+  });
+  
+$('#most-borrowed').on('click', function () {
     
-    $('#back-to-menu').on('click', function () {
-        $('#action-container').fadeOut(300, function () {
-          $('#main-container').fadeIn(300);
-          $('#back-to-menu').hide();
-        });
-      });
-
-    $('#most-borrowed').on('click', function () {
-      showSection('#most-borrowed-section');
       $.ajax({
         url: 'http://localhost/proyectoBiblioteca/backend/top-books.php',
         type: 'GET',
         success: function (response) {
-          var data = response;
+          var data = response;     
           console.log(data);
           var booksHtml = '';
-          data.Libros.forEach(function (book) {
+          response.forEach(function (book) {
             booksHtml += `
-              <div class="col-md-3 mb-3">
-                <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title">${book.titulo}</h5>
-                    <p class="card-text"><strong>Autor:</strong> ${book.autor}</p>
-                    <p class="card-text"><strong>Préstamos:</strong> ${book.total_prestamos}</p>
-                  </div>
+                <div class="card"">
+                  <div class="card-body" style="height: 270px; width: 300px;">
+                    <h5 class="card-title" style="text-align: center">${book.Libro}</h5>
+                    <p class="card-text"><strong>Autor:</strong> ${book.Autor}</p>
+                    <p class="card-text"><strong>Fecha de Publicación:</strong> ${book.Fecha_Publicacion}</p>
+                    <p class="card-text"><strong>Genero:</strong> ${book.Genero}</p>
+                    <p class="card-text"><strong>Préstamos:</strong> ${book.TotalPrestamos}</p>
                 </div>
               </div>`;
           });
@@ -115,6 +118,7 @@ $(document).on('click', '.view-loans', function () {
         }
       });
     });
+
 
     // Manejadores para mostrar/ocultar los campos correspondientes
 $('#new-author-checkbox').on('change', function() {
@@ -221,6 +225,22 @@ $('#book-genere').keyup(function () {
         $('#search-results-gen').fadeOut(); // Esconde el desplegable si no hay texto
     }
 });
+
+//agregar book
+$('#add-book').on('click', function () {
+    showSection('#add-book-section');
+  });
+
+  $('#view-users, #add-book, .view-loans').on('click', function () {
+      $('#back-to-menu').css('display', 'flex').hide().fadeIn(300); // Cambia a 'flex' y luego muestra con fadeIn
+  });
+  
+  $('#back-to-menu').on('click', function () {
+      $('#action-container').fadeOut(300, function () {
+        $('#main-container').fadeIn(300);
+        $('#back-to-menu').hide();
+      });
+    });
 
   // Enviar datos del formulario
   $('#add-book-form').on('submit', function(e) {

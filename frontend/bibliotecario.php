@@ -7,89 +7,12 @@
   <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css">
   <link rel="stylesheet" href="estilos.css"> 
   <style>
-    #search-results {
-      position: absolute; /* Para que se posicione debajo del input */
-      top: 50%; /* Justo debajo del input */
-      left: 565px; /* Alineado con el input */
-      width: 405px; /* Mismo ancho del input */
-      z-index: 1000; /* Sobre otros elementos */
-      background-color: white; /* Fondo blanco para destacar */
-      border: 1px solid #ccc; /* Bordes del desplegable */
-      border-radius: 0 0 5px 5px; /* Bordes redondeados en la parte inferior */
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para efecto flotante */
-      max-height: 300px; /* Límite de altura con scroll */
-      overflow-y: auto; /* Habilita scroll si hay muchos resultados */
-      display: none; /* Ocultar por defecto */
-      padding: 0; /* Sin espacio adicional */
-    }
-
-    #action-container {
-      display: none; /* Inicialmente oculto */
-      position: absolute;
-    }
-
-    .save-book{
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      flex-direction: column;
-      position: relative;
-    }
-    .center-content {
-        height: 10vh; /* Altura completa */
-        top: 10vh; /* Ajusta este valor para bajar */
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        flex-direction: column;
-        position: relative; /* Asegúrate de que top funcione */
-    }
-    .back-arrow {
-        display: none;
-        cursor: pointer;
-        font-size: 24px;
-        color: #007bff;
-        padding-top: 2%;
-        padding-left: 2%;
-        position: relative;
-    }
-
-    .add-book-section{
-    height: 50vh;
-    position: fixed;
-    z-index: 1000;
-    position: absolute;
-    width: 50%; /* Ajusta según sea necesario */
-    margin: 0 auto;
-    display: flex; /* Activa Flexbox */
-    flex-direction: column; /* Alinea los elementos en una columna */
-    align-items: center; /* Centra horizontalmente */
-    gap: 20px; /* Espacio entre elementos */
-    text-align: center; /* Centra el texto dentro de los elementos *//
-    }
-
-    .search-results-author {
-        position: absolute; /* Para que se posicione debajo del input */
-        top: 50%; /* Justo debajo del input */
-        left: 565px; /* Alineado con el input */
-        width: 405px; /* Mismo ancho del input */
-        z-index: 1000; /* Sobre otros elementos */
-        background-color: white; /* Fondo blanco para destacar */
-        border: 1px solid #ccc; /* Bordes del desplegable */
-        border-radius: 0 0 5px 5px; /* Bordes redondeados en la parte inferior */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para efecto flotante */
-        max-height: 300px; /* Límite de altura con scroll */
-        overflow-y: auto; /* Habilita scroll si hay muchos resultados */
-        display: none; /* Ocultar por defecto */
-        padding: 0; /* Sin espacio adicional */
-    }
-
   </style>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg">
     <a class="navbar-brand" href="#">BUAP</a>
-    <a class="navbar-brand" href="#">Biblioteca Virtual</a>
+    <a class="navbar-brand" style="text-align: center;" href="dashboard.php">Biblioteca Virtual</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -110,9 +33,10 @@
     <div id="main-container" class="center-content">
         <h2>¿Qué deseas hacer hoy?</h2>
         <div class="mt-4">
-            <button id="view-users" class="btn btn-primary mx-2">Ver Usuarios</button>
+            <button id="view-users" class="btn btn-primary mx-2">Ver Miembros Más Activos</button>
             <button id="add-book" class="btn btn-success mx-2">Agregar Libro</button>
             <button id="most-borrowed" class="btn btn-warning mx-2">Ver Libros Más Prestados</button>
+            <button id="all-books" class="btn btn-warning mx-2">Todos los Libros</button>
         </div>
     </div>
 
@@ -129,14 +53,21 @@
         <div id="view-users-section" style="display: none;">
             <h3>Miembros Más Activos</h3>
             <div id="users-list" class="row 4"></div>
+
+            <div class="search-section" style="position: relative;"> 
+              <input type="text" class="form-control d-inline" id="search-input" placeholder="Buscar por libro o autor..." style="width: 100%;">
+              <button class="btn btn-outline-dark" id="search-button">Buscar</button>
+              <div id="search-results"></div> <!-- Contenedor de los resultados -->
+            </div>
         </div>
 
         <!-- Sección Ver Libros Más Prestados -->
-        <div id="most-borrowed-section" style="display: flex;">
-            <h3>Libros Más Prestados</h3>
-            <div id="borrowed-books-list" class="row"></div>
+        <div class="container-2">
+        <div id="most-borrowed-section" style="display: none;">
+            <h3 style="text-align: center; padding-bottom: 2%">Libros Más Prestados</h3>
+            <div id="borrowed-books-list"></div>
+        </div>  
         </div>
-
         <!-- Sección Agregar Libro -->
         <div id="add-book-section" class="form-group2">
             <h3 >Agregar un Nuevo Libro</h3>

@@ -82,7 +82,6 @@
         </ul>
       </div>
     </nav>
-   
 
   
     <div class="subheader-section">

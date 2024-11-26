@@ -92,8 +92,36 @@ document.addEventListener('DOMContentLoaded', () => {
         // Si el inicio de sesión es exitoso, ocultar el login y mostrar el perfil
         alert('Inicio de sesión exitoso');
         if(rol === 'bibliotecario' ){
+          let { id_miembro,nombre} = result.user;
+    
+          // Cambiar el texto del dropdown a 'Perfil'
+          $('#navbarDropdown').html('Perfil ' + nombre);
           
-          window.location.href = 'bibliotecario.php';
+          // Actualizar el dropdown para que solo muestre las opciones de perfil
+          $('#navbarDropdown').attr('data-toggle', 'dropdown');
+        
+          // Ocultar los formularios de inicio de sesión y registro
+          $('#form-login').hide();
+          $('#form-register').hide();
+        
+          // Ocultar el contenedor del dropdown original
+          $('.dropdown-menu.show').hide();
+        
+          // Mostrar las opciones de perfil con el nuevo tamaño reducido
+          $('#navbarDropdown').after(`
+          <div class="dropdown-menu"  aria-labelledby="navbarDropdown">
+            <a class="dropdown-item view-loans" href="#">Acciones Disponibles</a>
+            <a class="dropdown-item" href="dashboard.php" id="logout">Cerrar Sesión</a>
+          </div>
+          `);
+          $(document).on('click', '.view-loans', function() {
+          const form = $('<form>', {
+            'method': 'POST',
+            'action': 'bibliotecario.php',
+            'target': '_blank'
+          });
+          form.appendTo('body').submit();
+          });
         }else{
           loggeado=true;
           let { id_miembro,nombre} = result.user;

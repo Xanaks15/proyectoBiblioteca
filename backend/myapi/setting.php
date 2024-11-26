@@ -1,7 +1,7 @@
 <?php
-    define("USUARIO","sa");
+    define("USUARIO","InterfazBiblioteca");
 
-    define("PASSWORD","zorobabel");
+    define("PASSWORD","al2-wwq64#1");
 
     define('DATABASE', 'ProyectoBiblioteca');
 

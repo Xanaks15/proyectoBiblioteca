@@ -55,7 +55,6 @@ body {
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 5px; /* Agregar borde redondeado */
-  min-width: 500px;
   z-index: 9999;
 }
 
@@ -147,6 +146,10 @@ body {
   width: 600px;
 }
 
+.card-body {
+  width: auto;
+  padding: 20px;
+}
 /*resultados de busqueda
 */
 #search-results {
@@ -205,4 +208,117 @@ body {
   margin-top: 15px; /* Añade espacio entre los detalles y el botón */
 }
 
+#action-container {
+  display: none; /* Inicialmente oculto */
+  position: absolute;
+}
 
+.save-book{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-direction: column;
+  position: relative;
+}
+.center-content {
+    height: 10vh; /* Altura completa */
+    top: 10vh; /* Ajusta este valor para bajar */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: column;
+    position: relative; /* Asegúrate de que top funcione */
+}
+.back-arrow {
+    display: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #007bff;
+    padding-top: 2%;
+    padding-left: 2%;
+    position: relative;
+}
+
+.add-book-section{
+height: 50vh;
+position: fixed;
+z-index: 1000;
+position: absolute;
+width: 50%; /* Ajusta según sea necesario */
+margin: 0 auto;
+display: flex; /* Activa Flexbox */
+flex-direction: column; /* Alinea los elementos en una columna */
+align-items: center; /* Centra horizontalmente */
+gap: 20px; /* Espacio entre elementos */
+text-align: center; /* Centra el texto dentro de los elementos *//
+}
+
+.search-results-author {
+    position: absolute; /* Para que se posicione debajo del input */
+    top: 50%; /* Justo debajo del input */
+    left: 565px; /* Alineado con el input */
+    width: 405px; /* Mismo ancho del input */
+    z-index: 1000; /* Sobre otros elementos */
+    background-color: white; /* Fondo blanco para destacar */
+    border: 1px solid #ccc; /* Bordes del desplegable */
+    border-radius: 0 0 5px 5px; /* Bordes redondeados en la parte inferior */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra para efecto flotante */
+    max-height: 300px; /* Límite de altura con scroll */
+    overflow-y: auto; /* Habilita scroll si hay muchos resultados */
+    display: none; /* Ocultar por defecto */
+    padding: 0; /* Sin espacio adicional */
+}
+
+.col-md-2 .card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.col-md-2 .card:hover {
+  transform: scale(1.05); /* Efecto de zoom */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Sombra al pasar el cursor */
+  box-shadow: 0 8px 16px rgba(30, 144, 255, 0.4);
+}
+
+.card-body {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.btn.view-loans {
+  margin-top: 1px;
+}
+
+.container-2 {
+  max-width: 1300px; /* Limita el ancho máximo a 1200px */
+  margin: 0 auto; /* Centra el contenedor horizontalmente */
+  padding: 0 15px; /* Añade un pequeño padding para evitar que se pegue a los bordes */
+  overflow-x: hidden; /* Evita desbordamientos horizontales */
+}
+
+  /* Espaciado entre filas */
+  #borrowed-books-list {
+    display: flex;
+    flex-wrap: wrap;
+    grid-template-columns: repeat(4, 1fr); /* 4 columnas iguales */
+    gap: 20px; /* Espaciado entre las tarjetas */
+    justify-content: space-evenly;
+  }
+  
+  .card {
+    flex: 1 1 calc(25% - 20px); /* Cada tarjeta ocupa aproximadamente un 25% del contenedor */
+    max-width: 310px; /* Máximo ancho por tarjeta */
+    min-width: 200px; /* Mínimo ancho por tarjeta */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: scale(1.05); /* Efecto de zoom */
+    box-shadow: 0 8px 16px rgba(30, 144, 255, 0.4); /* Sombra al hacer hover */
+  }
+  
+
+  .card-body {
+    text-align: start;
+  }
